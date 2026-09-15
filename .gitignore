@@ -1,0 +1,25 @@
+# secrets
+.env
+*.env
+!.env.example
+
+# environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+
+# large / regenerable data
+data/raw/
+data/interim/
+*.tif
+*.tiff
+*.gpkg
+*.parquet
+*.duckdb
+*.duckdb.wal
+
+# osmnx cache
+cache/

@@ -1,0 +1,29 @@
+# Week 4 network optimiser inputs. Disclosed/derived numbers are read from config/economics.yaml and the
+# Week 3 sensitivity CSV at run time, so they aren't duplicated here.
+brand: Blinkit
+reach_method: radius             # decided in Week 2 (validated vs Zepto zones)
+
+orders:
+  calibration_quarter: Q4FY26    # the store snapshot was scraped Mar 2026 = end of Q4FY26
+  adoption_elasticity: 0.5       # assumption: 0 = orders proportional to population; 1 = population x demand index / mean
+  snapshot_completeness: derived # derived = snapshot national Blinkit stores / disclosed stores at quarter end
+  growth_multiplier: 1.0         # scenario: demand growth on top of the snapshot-date calibration
+
+capacity:
+  source: steady_state           # derived: steady-state NOV/day/store / calibration-quarter NAOV
+breakeven:
+  source: sensitivity_median     # derived: median of the 81 Week 3 scenarios per city
+
+max_new_sites: [5, 10, 20, 30]
+memo_sites: 10
+
+validation:
+  holdout_share: 0.2
+  repeats: 5
+  match_km: 1.5
+  seed: 7
+
+scenarios:
+  adoption_elasticity: [0.0, 0.5, 1.0]
+  growth_multiplier: [1.0, 1.5]
+  capacity_orders_per_day: [1600, 2125]

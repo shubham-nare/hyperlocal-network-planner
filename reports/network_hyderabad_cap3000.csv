@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860a25b61fffff,17.39371,78.51237,500013,Amberpet,"Hyderabad, Medchal",77.0,56.5,3000,2789,2465,535,0.07,5.58,71671,4
+2,8860b52c93fffff,17.43048,78.49154,500003,Secunderabad,Hyderabad,67.0,39.1,2421,2421,1217,1204,0.0,4.5,36708,2
+3,8860a25b11fffff,17.37816,78.46891,500012,Begumbazar,Hyderabad,78.9,64.2,2167,1956,1660,507,0.1,4.03,54315,1
+4,8860b525b1fffff,17.34902,78.50283,500059,Saidabad (Hyderabad),"Hyderabad, Rangareddy",56.5,18.8,1837,1837,1837,0,0.0,3.41,84467,2
+5,8860b52dc5fffff,17.48381,78.57466,500062,Dr As Rao Nagar,Medchal,47.5,23.6,1687,1687,1687,0,0.0,3.14,78473,2
+6,8860b52c39fffff,17.44661,78.56958,500076,Snehapuri Colony,Medchal,76.7,67.7,1501,1501,1501,0,0.0,2.79,68251,2
+7,8860b52c85fffff,17.4459,78.52638,500047,Anandbagh,"Hyderabad, Medchal, Rangareddy",54.5,30.8,1619,1349,1349,270,0.17,3.01,61052,2
+8,8860b196b7fffff,17.51071,78.41121,500072,Vivekanandanagar Colony,"Medchal, Rangareddy",35.8,10.1,1301,1301,1301,0,0.0,2.42,43084,1
+9,8860b5253bfffff,17.34249,78.5588,500070,Vanastalipuram,Rangareddy,74.5,64.5,1335,1252,1252,83,0.06,2.48,36402,4
+10,8860b52ec1fffff,17.37234,78.56804,500068,Gsi(Sr) Bandlaguda,"Medchal, Rangareddy",71.5,60.6,1348,1251,1251,97,0.07,2.51,57705,5

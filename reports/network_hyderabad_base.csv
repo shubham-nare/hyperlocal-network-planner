@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860a25b69fffff,17.38636,78.51653,500013,Amberpet,"Hyderabad, Medchal",78.9,78.4,2094,2094,2094,0,0.0,3.89,69261,1
+2,8860a25b11fffff,17.37816,78.46891,500012,Begumbazar,Hyderabad,78.9,64.2,2094,2094,1660,434,0.0,3.89,54315,1
+3,8860b525abfffff,17.34929,78.52009,500035,Huda Residential Complex,"Hyderabad, Medchal, Rangareddy",55.0,15.9,2094,2094,1297,797,0.0,3.89,49613,4
+4,8860b52c97fffff,17.43797,78.49601,500003,Secunderabad,Hyderabad,85.0,82.3,2094,2094,860,1234,0.0,3.89,24938,2
+5,8860a25b27fffff,17.41563,78.49124,500080,Gandhinagar (Hyderabad),Hyderabad,95.0,90.3,2094,2094,292,1802,0.0,3.89,9415,3
+6,8860b52cd7fffff,17.42341,78.51298,500061,Sitaphalmandi,Hyderabad,78.3,66.2,2094,2094,136,1958,0.0,3.89,5229,1
+7,8860a25901fffff,17.4374,78.46148,500016,Begumpet,"Hyderabad, Medchal, Rangareddy",83.8,86.3,2094,2094,0,2094,0.0,3.89,0,2
+8,8860a25b3bfffff,17.393,78.46921,500004,Khairatabad,Hyderabad,81.2,73.6,2094,2094,0,2094,0.0,3.89,0,2
+9,8860b52eddfffff,17.3647,78.55494,500035,Huda Residential Complex,"Hyderabad, Medchal, Rangareddy",70.1,61.5,2094,2094,0,2094,0.0,3.89,0,5
+10,8860b52ea5fffff,17.41676,78.56032,500039,Uppal (K.V.Rangareddy),"Medchal, Rangareddy",42.6,7.3,1805,1805,1243,562,0.0,3.35,47447,2

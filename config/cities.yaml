@@ -1,0 +1,38 @@
+# City definitions. Boundaries are geocoded by OSMnx from `place_query`; verify the returned polygon in Week 1.
+defaults:
+  h3_resolution: 8          # ~0.74 km2 per hex
+  delivery_promise_min: 10  # scenario input, tunable in the simulator
+  picking_time_min: 2.5     # assumption, not sourced
+  # Reach model DECIDED 2026-09-15 after validation against 315 Zepto delivery zones (scripts/validate_reach_zepto.py):
+  # calibrated straight-line radius by default, gap-filled road network as a scenario. Per-city speeds below are
+  # calibration parameters fitted to Zepto's zone footprints, not measured rider speeds.
+  reach:
+    default_method: radius
+    scenario_methods: [road_filled]
+    validation_resolution: 9
+  study_area:
+    min_density_per_km2: 2500     # chosen 2026-09-15; converges for all 3 cities (1500 = GHSL urban-centre level, sensitivity only)
+    max_rings: 25                 # safety cap, not binding at 2500
+    ribbon_min_neighbours: 3      # added hex needs >= 3 of 6 neighbours in area
+
+# Core boundaries are pinned by OSM relation id (reproducible). The study area = core + contiguous dense hexes (see CONTEXT.md).
+cities:
+  hyderabad:
+    label: "Hyderabad, Telangana, India"
+    osm_id: "R7868535"      # addresstype city, ~610 km2
+    role: deep_dive
+    reach_speed_kmph: {radius: 13, road_filled: 14}   # 1,625 m radius / 1,750 m network budget
+  bengaluru:
+    label: "Bengaluru, Karnataka, India"
+    osm_id: "R7902476"      # addresstype city, ~717 km2
+    role: replication
+    reach_speed_kmph: {radius: 11, road_filled: 13}   # 1,375 m radius / 1,625 m network budget
+  pune:
+    label: "Pune, Maharashtra, India"
+    osm_id: "R10351626"     # Pune City Subdistrict, admin_level 6, ~312 km2; no city-level polygon exists in OSM
+    role: replication
+    reach_speed_kmph: {radius: 13, road_filled: 19}   # 1,625 m radius / 2,375 m network budget (sparse graph)
+
+modes:
+  - dark_store
+  - cloud_kitchen

@@ -1,0 +1,36 @@
+# Dark-store unit economics inputs. Every value is tagged by where it comes from:
+#   disclosed  = Eternal Q1 FY27 shareholder letter (data/raw/eternal/eternal_q1fy27_results.pdf)
+#   secondary  = third-party press/brokerage (weaker; cited inline)
+#   assumption = ours, no source; always swept in the sensitivity table
+
+# disclosed: Annexure A, quick commerce (PDF p.9). INR crore unless stated.
+# segment_result_cr: disclosed, consolidated Note 3 (Q2/Q3 FY26 not in this letter).
+quarters:
+  Q1FY26: {nov_cr: 9203, gross_profit_cr: 2168, contribution_cr: 360, adjusted_ebitda_cr: -162, orders_mn: 176.7, nov_per_store_day_inr: 734000, stores_end: 1544, segment_result_cr: -42}
+  Q2FY26: {nov_cr: 11679, gross_profit_cr: 3132, contribution_cr: 542, adjusted_ebitda_cr: -156, orders_mn: 222.7, nov_per_store_day_inr: 771000, stores_end: 1816}
+  Q3FY26: {nov_cr: 13300, gross_profit_cr: 3539, contribution_cr: 736, adjusted_ebitda_cr: 4, orders_mn: 243.3, nov_per_store_day_inr: 750000, stores_end: 2027}
+  Q4FY26: {nov_cr: 14386, gross_profit_cr: 3867, contribution_cr: 782, adjusted_ebitda_cr: 37, orders_mn: 273.9, nov_per_store_day_inr: 768000, stores_end: 2243, segment_result_cr: 265}
+  Q1FY27: {nov_cr: 17132, gross_profit_cr: 4710, contribution_cr: 907, adjusted_ebitda_cr: 102, orders_mn: 331.0, nov_per_store_day_inr: 827000, stores_end: 2443, segment_result_cr: 365}
+calibration_quarter: Q1FY27
+
+# disclosed: management's steady-state assumptions (PDF p.6)
+steady_state:
+  nov_per_store_day_inr: 1100000
+  capex_per_store_inr: 25000000     # includes warehousing
+  adjusted_ebitda_pct_nov: 6
+  ebit_pct_nov: 4
+
+store:
+  size_sqft: 4000                   # secondary: Upstox/ANAROCK Apr 2026, core dark stores 3,000-5,000 sq ft
+  other_fixed_cost_per_day_inr: 8000  # assumption: core staff (manager, shift leads, security) + power/cold chain + upkeep
+
+# secondary: Upstox citing ANAROCK, Apr 2026, dark-store rent INR/sq ft/month. Default = midpoint of the range.
+cities:
+  hyderabad: {rent_per_sqft_month_inr: 90, rent_range: [70, 110]}
+  bengaluru: {rent_per_sqft_month_inr: 140, rent_range: [100, 180]}
+  pune: {rent_per_sqft_month_inr: 90, rent_range: [70, 110]}
+
+sensitivity:
+  size_sqft: [3000, 4000, 6000]
+  other_fixed_cost_per_day_inr: [4000, 8000, 15000]
+  variable_cost_shift_inr: [-10, 0, 10]   # e.g. rider pay changes (Karnataka gig-worker act), packaging, subsidies

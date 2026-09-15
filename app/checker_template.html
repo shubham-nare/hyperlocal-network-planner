@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serviceability Checker</title>
+<style>
+  :root { --bg:#f7f7f5; --card:#ffffff; --ink:#1c1c1c; --muted:#6b6b6b; --line:#e3e3df;
+          --accent:#0b6e4f; --yes:#1a7f37; --no:#c0392b; --unsure:#a0670f; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161616; --card:#202020; --ink:#ececec; --muted:#9a9a9a; --line:#343434;
+            --accent:#3fbf8f; --yes:#56c271; --no:#ef6b5e; --unsure:#e0a43c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--ink);
+         font:15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:760px; margin:0 auto; }
+  header { display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  h1 { font-size:20px; margin:0; }
+  .progress { color:var(--muted); font-variant-numeric:tabular-nums; }
+  .bar { height:6px; background:var(--line); border-radius:3px; margin:10px 0 18px; overflow:hidden; }
+  .bar > span { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px; }
+  .meta { color:var(--muted); font-size:13px; display:flex; flex-wrap:wrap; gap:4px 14px; }
+  .place { font-size:22px; font-weight:600; margin:10px 0 2px; overflow-wrap:anywhere; }
+  .coords { font-family:ui-monospace, Consolas, monospace; color:var(--muted); font-size:13px; }
+  .actions { display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 2px; }
+  button { font:inherit; font-size:14px; padding:6px 11px; border-radius:7px; border:1px solid var(--line);
+           background:var(--bg); color:var(--ink); cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  kbd { font-family:ui-monospace, Consolas, monospace; font-size:12px; border:1px solid var(--line);
+        border-bottom-width:2px; border-radius:4px; padding:0 5px; background:var(--bg); }
+  .apps { list-style:none; padding:0; margin:16px 0 0; display:grid; gap:8px; }
+  .apps li { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px;
+             border:1px solid var(--line); border-radius:8px; cursor:pointer; }
+  .apps li.current { border-color:var(--accent); box-shadow:inset 3px 0 0 var(--accent); }
+  .ans { font-weight:600; color:var(--muted); }
+  .ans.yes { color:var(--yes); } .ans.no { color:var(--no); } .ans.unsure { color:var(--unsure); }
+  .note { width:100%; margin-top:14px; padding:8px 10px; border:1px solid var(--line); border-radius:7px;
+          background:var(--bg); color:var(--ink); font:inherit; }
+  .legend { margin-top:16px; color:var(--muted); font-size:13px; display:flex; flex-wrap:wrap; gap:6px 16px; }
+  .status { margin-top:10px; font-size:13px; color:var(--muted); min-height:1.3em; }
+  .done { text-align:center; padding:24px 8px; }
+  code { font-family:ui-monospace, Consolas, monospace; font-size:13px; }
+  .howto { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px;
+           margin-bottom:12px; font-size:14px; }
+  .howto summary { cursor:pointer; font-weight:600; }
+  .howto ol { margin:8px 0 4px; padding-left:20px; }
+  .howto li { margin:3px 0; }
+  .howto p { margin:4px 0 2px; color:var(--muted); }
+  .coordrow { display:flex; flex-wrap:wrap; gap:4px 18px; font-family:ui-monospace, Consolas, monospace;
+              font-size:16px; margin-top:8px; }
+  .hint { color:var(--muted); font-size:13px; margin-top:2px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Serviceability Checker</h1>
+    <div class="progress" id="progress"></div>
+  </header>
+  <div class="bar"><span id="bar"></span></div>
+  <details class="howto" id="howto" open>
+    <summary>How to check a point accurately (exact location, no name search)</summary>
+    <ol>
+      <li>Open the app's website in Chrome or Edge and press <kbd>F12</kbd>, then <strong>&#8942;</strong> &rarr; <strong>More tools</strong> &rarr; <strong>Sensors</strong>.</li>
+      <li>Under <strong>Location</strong>, choose <strong>Other&hellip;</strong> and paste the latitude (<kbd>L</kbd>) and longitude (<kbd>G</kbd>) shown below.</li>
+      <li>On the website, click <strong>Detect my location</strong> (allow location access if asked).</li>
+      <li>Check the address the site shows is in the same area as the place name, then record <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd>.</li>
+    </ol>
+    <p>Why: searching by name is ambiguous (there are several "Kuvempu Nagar"s), so it can silently check the wrong place.</p>
+  </details>
+  <section class="card" id="card" aria-live="polite"></section>
+  <div class="status" id="status" role="status"></div>
+  <div class="legend">
+    <span><kbd>1</kbd> Serviceable</span><span><kbd>2</kbd> Not serviceable</span><span><kbd>3</kbd> Unsure</span>
+    <span><kbd>Backspace</kbd> Undo</span><span><kbd>&larr;</kbd> <kbd>&rarr;</kbd> Previous / next point</span>
+    <span><kbd>L</kbd> Copy latitude</span><span><kbd>G</kbd> Copy longitude</span>
+    <span><kbd>P</kbd> Copy place name</span><span><kbd>C</kbd> Copy "lat, lng"</span><span><kbd>M</kbd> Open map</span>
+    <span><kbd>N</kbd> Note</span><span><kbd>D</kbd> Download CSV</span>
+  </div>
+</main>
+<script>
+const POINTS = /*__POINTS__*/[];
+const APPS = /*__APPS__*/[];
+const STORE_KEY = "hnp-checker-v1-" + POINTS.length + "-" + (POINTS[0] ? POINTS[0].id : "empty");
+const LABELS = { yes: "Serviceable", no: "Not serviceable", unsure: "Unsure" };
+
+let answers = loadAnswers();
+let idx = firstIncomplete();
+let appIdx = firstUnansweredApp(idx);
+
+function loadAnswers() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveAnswers() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(answers)); }
+  catch (e) { setStatus("Browser storage unavailable: press D regularly to download your results."); }
+}
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+function setStatus(text) { document.getElementById("status").textContent = text; }
+function record(i) { const id = POINTS[i].id; return answers[id] || (answers[id] = {}); }
+function isComplete(i) { const r = answers[POINTS[i].id]; return !!r && APPS.every(a => r[a]); }
+function firstIncomplete() { const i = POINTS.findIndex((_, k) => !isComplete(k)); return i === -1 ? POINTS.length : i; }
+function firstUnansweredApp(i) {
+  if (i >= POINTS.length) return 0;
+  const r = answers[POINTS[i].id] || {};
+  const k = APPS.findIndex(a => !r[a]);
+  return k === -1 ? 0 : k;
+}
+function nextIncompleteAfter(i) {
+  for (let k = i + 1; k < POINTS.length; k++) if (!isComplete(k)) return k;
+  return firstIncomplete();
+}
+
+function answer(value) {
+  if (idx >= POINTS.length) return;
+  const r = record(idx);
+  r[APPS[appIdx]] = value;
+  if (APPS.every(a => r[a])) r.checked_at = new Date().toISOString();
+  saveAnswers();
+  if (appIdx < APPS.length - 1) { appIdx++; render(); return; }
+  showPoint(nextIncompleteAfter(idx));
+}
+
+function undo() {
+  if (idx >= POINTS.length) { if (!POINTS.length) return; idx = POINTS.length - 1; appIdx = APPS.length - 1; }
+  else if (appIdx > 0) { appIdx--; }
+  else if (idx > 0) { idx--; appIdx = APPS.length - 1; }
+  else return;
+  const r = record(idx);
+  delete r[APPS[appIdx]];
+  delete r.checked_at;
+  saveAnswers();
+  render();
+}
+
+function showPoint(i) {
+  idx = Math.max(0, Math.min(i, POINTS.length));
+  appIdx = firstUnansweredApp(idx);
+  render();
+  if (idx < POINTS.length) copyText(POINTS[idx].lat.toFixed(6), false);
+}
+function step(delta) { showPoint(Math.max(0, Math.min((idx >= POINTS.length ? POINTS.length - 1 : idx) + delta, POINTS.length - 1))); }
+
+function coordText(p) { return p.lat.toFixed(5) + ", " + p.lng.toFixed(5); }
+async function copyText(text, announce) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const t = document.createElement("textarea");
+    t.value = text; document.body.appendChild(t); t.select();
+    try { document.execCommand("copy"); } finally { t.remove(); }
+  }
+  setStatus((announce ? "Copied: " : "Copied to clipboard: ") + text);
+}
+function openMap() {
+  if (idx >= POINTS.length) return;
+  const p = POINTS[idx];
+  window.open("https://www.google.com/maps?q=" + p.lat + "," + p.lng, "_blank", "noopener");
+}
+function focusNote() { const n = document.getElementById("note"); if (n) n.focus(); }
+function copyField(field) {
+  if (idx >= POINTS.length) return;
+  const p = POINTS[idx];
+  const text = field === "lat" ? p.lat.toFixed(6)
+    : field === "lng" ? p.lng.toFixed(6)
+    : field === "pair" ? coordText(p)
+    : (p.label || coordText(p));
+  copyText(text, true);
+}
+
+function slug(name) { return name.toLowerCase().replace(/[^a-z0-9]+/g, "_"); }
+function csvCell(value) {
+  const s = value === null || value === undefined ? "" : String(value);
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function download() {
+  const cols = ["id", "city", "pincode", "office", "point_type", "demand_tier", "lat", "lng", "h3",
+                "demand_index", "in_core", "label", ...APPS.map(slug), "note", "checked_at"];
+  const rows = POINTS.map(p => {
+    const r = answers[p.id] || {};
+    return [p.id, p.city, p.pincode, p.office, p.point_type, p.demand_tier, p.lat, p.lng, p.h3,
+            p.demand_index, p.in_core, p.label, ...APPS.map(a => r[a] || ""), r.note || "", r.checked_at || ""];
+  });
+  const csv = [cols, ...rows].map(row => row.map(csvCell).join(",")).join("\r\n");
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "validation_results.csv";
+  document.body.appendChild(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  setStatus("Downloaded validation_results.csv. Move it to data/processed/ in the project.");
+}
+
+function render() {
+  const done = POINTS.filter((_, k) => isComplete(k)).length;
+  document.getElementById("progress").textContent = done + " / " + POINTS.length + " points checked";
+  document.getElementById("bar").style.width = (POINTS.length ? 100 * done / POINTS.length : 0) + "%";
+  const card = document.getElementById("card");
+  if (idx >= POINTS.length) {
+    card.innerHTML = '<div class="done"><div class="place">All points checked</div>' +
+      '<p>Press <kbd>D</kbd> to download <code>validation_results.csv</code>, then move it to <code>data/processed/</code>.</p></div>';
+    return;
+  }
+  const p = POINTS[idx];
+  const r = answers[p.id] || {};
+  const city = p.city.charAt(0).toUpperCase() + p.city.slice(1);
+  const kind = p.point_type === "high_demand" ? "High-demand point" : "Low-demand point";
+  card.innerHTML =
+    '<div class="meta"><span>' + esc(p.id) + '</span><span>' + esc(city) + '</span><span>PIN ' + esc(p.pincode) +
+      '</span><span>' + esc(p.office) + '</span><span>' + kind + '</span><span>Demand index ' +
+      esc(p.demand_index === null ? "n/a" : p.demand_index) + '</span></div>' +
+    '<div class="coordrow"><span>Lat ' + p.lat.toFixed(6) + '</span><span>Lng ' + p.lng.toFixed(6) + '</span></div>' +
+    '<div class="place">' + esc(p.label || "Unnamed location") + '</div>' +
+    '<div class="hint">After "Detect my location", the address the app shows should be in this area.</div>' +
+    '<div class="actions">' +
+      '<button data-act="lat"><kbd>L</kbd> Copy latitude</button>' +
+      '<button data-act="lng"><kbd>G</kbd> Copy longitude</button>' +
+      '<button data-act="copy"><kbd>P</kbd> Copy place name</button>' +
+      '<button data-act="map"><kbd>M</kbd> Open map</button>' +
+      '<button data-act="prev"><kbd>&larr;</kbd> Previous</button>' +
+      '<button data-act="next">Next <kbd>&rarr;</kbd></button>' +
+    '</div>' +
+    '<ul class="apps">' + APPS.map((a, k) =>
+      '<li data-app="' + k + '" class="' + (k === appIdx ? "current" : "") + '"><span>' + esc(a) + '</span>' +
+      '<span class="ans ' + (r[a] || "") + '">' + (r[a] ? LABELS[r[a]] : (k === appIdx ? "Answer now: 1 / 2 / 3" : "—")) +
+      '</span></li>').join("") + '</ul>' +
+    '<input class="note" id="note" placeholder="Note (press N), e.g. shows 18 min, coming soon" value="' + esc(r.note || "") + '">';
+}
+
+document.getElementById("card").addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if (btn) {
+    const p = POINTS[idx];
+    ({ lat: () => copyField("lat"), lng: () => copyField("lng"), copy: () => copyField("label"),
+       map: openMap, prev: () => step(-1), next: () => step(1) })[btn.dataset.act]?.();
+    return;
+  }
+  const li = e.target.closest("li[data-app]");
+  if (li) { appIdx = Number(li.dataset.app); render(); }
+});
+document.getElementById("card").addEventListener("input", e => {
+  if (e.target.id !== "note" || idx >= POINTS.length) return;
+  record(idx).note = e.target.value;
+  saveAnswers();
+});
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") { if (e.key === "Enter" || e.key === "Escape") e.target.blur(); return; }
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const actions = {
+    "1": () => answer("yes"), "2": () => answer("no"), "3": () => answer("unsure"),
+    Backspace: undo, ArrowRight: () => step(1), ArrowLeft: () => step(-1),
+    l: () => copyField("lat"), L: () => copyField("lat"), g: () => copyField("lng"), G: () => copyField("lng"),
+    p: () => copyField("label"), P: () => copyField("label"), c: () => copyField("pair"), C: () => copyField("pair"),
+    m: openMap, M: openMap, n: focusNote, N: focusNote, d: download, D: download,
+  };
+  const action = actions[e.key];
+  if (action) { e.preventDefault(); action(); }
+});
+
+render();
+// Clipboard writes need a user gesture, so nothing is auto-copied on load.
+if (idx < POINTS.length) setStatus("Press L to copy the latitude into DevTools Sensors, then G for the longitude.");
+const howto = document.getElementById("howto");
+try { if (localStorage.getItem("hnp-checker-howto") === "closed") howto.open = false; } catch (e) {}
+howto.addEventListener("toggle", () => {
+  try { localStorage.setItem("hnp-checker-howto", howto.open ? "open" : "closed"); } catch (e) {}
+});
+</script>
+</body>
+</html>

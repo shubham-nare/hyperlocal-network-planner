@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860b52c35fffff,17.46146,78.56988,500040,Aphb Colony Moulali,Medchal,35.8,28.8,2094,2094,1768,327,0.0,3.89,51513,2
+2,8860b525a7fffff,17.36415,78.5204,500059,Saidabad (Hyderabad),"Hyderabad, Rangareddy",91.2,83.0,2094,2094,1151,944,0.0,3.89,27504,2
+3,8860a2596dfffff,17.44533,78.49184,500003,Secunderabad,Hyderabad,59.7,74.6,2094,2094,1052,1042,0.0,3.89,20636,2
+4,8860b52ebbfffff,17.39399,78.52964,500013,Amberpet,"Hyderabad, Medchal",70.5,58.1,2094,2094,997,1097,0.0,3.89,42031,2
+5,8860a25a2dfffff,17.35595,78.47277,500002,Hyderabad Jubilee,Hyderabad,74.6,54.3,2094,2094,195,1899,0.0,3.89,12684,2
+6,8860a24805fffff,17.4942,78.31605,500050,Chandanagar,Rangareddy,52.0,34.7,2094,2094,0,2094,0.0,3.89,0,3
+7,8860a24b67fffff,17.50292,78.38949,500090,Nizampet,"Medchal, Rangareddy",92.2,92.4,2094,2094,0,2094,0.0,3.89,0,2
+8,8860a25911fffff,17.42961,78.43976,500073,Srinagar Colony,"Hyderabad, Rangareddy",90.3,91.0,2094,2094,0,2094,0.0,3.89,0,4
+9,8860a25955fffff,17.42255,78.46118,500082,I.M.Colony,"Hyderabad, Rangareddy",82.8,90.1,2094,2094,0,2094,0.0,3.89,0,1
+10,8860b525c5fffff,17.32736,78.54122,500097,Meerpet,Rangareddy,34.0,0.1,2094,2094,0,2094,0.0,3.89,0,2

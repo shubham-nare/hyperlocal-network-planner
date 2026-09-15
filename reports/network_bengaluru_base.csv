@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860145b13fffff,12.98613,77.5442,560079,K H B Colony,Bangalore,80.0,74.1,2094,2094,2094,0,0.0,2.98,34897,2
+2,8861892ed1fffff,12.97089,77.62819,560008,H.A.L II Stage,Bangalore,86.7,75.5,2094,2094,1565,530,0.0,2.98,31277,1
+3,8860145a03fffff,12.94128,77.53503,560026,Governmemnt Electric Factory,Bangalore,48.2,39.1,2094,2094,1449,645,0.0,2.98,29857,1
+4,8860145a65fffff,12.95613,77.56896,560004,Basavanagudi,Bangalore,90.8,90.8,2094,2094,777,1318,0.0,2.98,16610,2
+5,8860145b2bfffff,13.00848,77.57405,560080,Sadashivanagar,Bangalore,68.0,82.6,2094,2094,449,1646,0.0,2.98,24587,2
+6,8860145b5dfffff,12.97106,77.57764,560053,Chickpet,Bangalore,64.1,84.3,2094,2094,449,1646,0.0,2.98,6999,0
+7,8861892591fffff,12.93364,77.58122,560011,Jayangar III Block,Bangalore,91.0,86.1,2094,2094,0,2094,0.0,2.98,0,2
+8,8861892c99fffff,13.03088,77.58706,560024,H.A. Farm,Bangalore,71.9,78.8,1983,1983,0,1983,0.0,2.82,0,2
+9,8861892531fffff,12.95586,77.64479,560017,NAL,Bangalore,70.3,87.0,1808,1808,1808,0,0.0,2.57,28465,2
+10,8860169611fffff,13.09081,77.55437,560097,Vidyaranyapura,Bangalore,45.5,40.7,1778,1778,1778,0,0.0,2.53,42964,0

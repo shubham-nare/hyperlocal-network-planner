@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860a25b6dfffff,17.39385,78.521,500013,Amberpet,"Hyderabad, Medchal",77.5,76.6,1600,1600,1600,0,0.0,2.97,66936,1
+2,8860b525bdfffff,17.34916,78.51146,500059,Saidabad (Hyderabad),"Hyderabad, Rangareddy",85.2,74.6,1600,1600,1390,210,0.0,2.97,74143,3
+3,8860a25945fffff,17.43034,78.48291,500029,Ramakrishna Mutt,Hyderabad,28.9,46.8,1600,1600,1013,587,0.0,2.97,36708,1
+4,8860b525adfffff,17.35693,78.53319,500035,Huda Residential Complex,"Hyderabad, Medchal, Rangareddy",72.7,47.5,1600,1600,591,1009,0.0,2.97,14315,2
+5,8860b196b3fffff,17.50322,78.40674,500072,Vivekanandanagar Colony,"Medchal, Rangareddy",63.5,38.7,1600,1600,536,1064,0.0,2.97,21396,1
+6,8860b52531fffff,17.34998,78.56327,500070,Vanastalipuram,Rangareddy,37.2,0.1,1600,1600,326,1274,0.0,2.97,29599,3
+7,8860a2596dfffff,17.44533,78.49184,500003,Secunderabad,Hyderabad,59.7,74.6,1600,1600,254,1346,0.0,2.97,20636,2
+8,8860a25b47fffff,17.37872,78.50343,500036,Old Malakpet,Hyderabad,50.0,15.9,1600,1600,117,1483,0.0,2.97,11469,0
+9,8860a2586dfffff,17.39286,78.46058,500004,Khairatabad,Hyderabad,75.8,60.9,1600,1600,0,1600,0.0,2.97,0,2
+10,8860a25915fffff,17.43711,78.44422,500038,Sanjeev Reddy Nagar,Rangareddy,95.0,97.8,1600,1600,0,1600,0.0,2.97,0,3

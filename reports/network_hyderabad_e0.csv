@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860b525bbfffff,17.34152,78.49836,500059,Saidabad (Hyderabad),"Hyderabad, Rangareddy",45.5,7.3,2094,2094,2094,0,0.0,3.89,82254,1
+2,8860a25b61fffff,17.39371,78.51237,500013,Amberpet,"Hyderabad, Medchal",77.0,56.5,2094,2094,1747,347,0.0,3.89,71671,4
+3,8860b52dc7fffff,17.48366,78.56602,500062,Dr As Rao Nagar,Medchal,60.4,42.3,2094,2094,1404,691,0.0,3.89,56408,2
+4,8860b52c8dfffff,17.43855,78.53055,500017,Lallapet,"Hyderabad, Medchal",41.2,7.3,2094,2094,1375,719,0.0,3.89,53334,3
+5,8860b525a3fffff,17.35665,78.51593,500059,Saidabad (Hyderabad),"Hyderabad, Rangareddy",51.9,8.4,2094,2094,1364,730,0.0,3.89,52912,5
+6,8860b52c93fffff,17.43048,78.49154,500003,Secunderabad,Hyderabad,67.0,39.1,2094,2094,884,1210,0.0,3.89,36708,2
+7,8860b525ebfffff,17.33472,78.53705,500097,Meerpet,Rangareddy,67.2,39.4,2094,2094,0,2094,0.0,3.89,0,2
+8,8860a25a63fffff,17.3411,78.47247,500053,Falaknuma,"Hyderabad, Rangareddy",38.4,0.1,2094,2093,1421,673,0.0,3.89,55121,1
+9,8860a25b1bfffff,17.37066,78.46444,500012,Begumbazar,Hyderabad,75.1,54.0,1839,1839,1052,787,0.0,3.42,65554,1
+10,8860a25b19fffff,17.3708,78.47307,500012,Begumbazar,Hyderabad,86.1,82.5,2094,1839,1023,1072,0.12,3.89,54315,1

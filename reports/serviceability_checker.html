@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serviceability Checker</title>
+<style>
+  :root { --bg:#f7f7f5; --card:#ffffff; --ink:#1c1c1c; --muted:#6b6b6b; --line:#e3e3df;
+          --accent:#0b6e4f; --yes:#1a7f37; --no:#c0392b; --unsure:#a0670f; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161616; --card:#202020; --ink:#ececec; --muted:#9a9a9a; --line:#343434;
+            --accent:#3fbf8f; --yes:#56c271; --no:#ef6b5e; --unsure:#e0a43c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--ink);
+         font:15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:760px; margin:0 auto; }
+  header { display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  h1 { font-size:20px; margin:0; }
+  .progress { color:var(--muted); font-variant-numeric:tabular-nums; }
+  .bar { height:6px; background:var(--line); border-radius:3px; margin:10px 0 18px; overflow:hidden; }
+  .bar > span { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px; }
+  .meta { color:var(--muted); font-size:13px; display:flex; flex-wrap:wrap; gap:4px 14px; }
+  .place { font-size:22px; font-weight:600; margin:10px 0 2px; overflow-wrap:anywhere; }
+  .coords { font-family:ui-monospace, Consolas, monospace; color:var(--muted); font-size:13px; }
+  .actions { display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 2px; }
+  button { font:inherit; font-size:14px; padding:6px 11px; border-radius:7px; border:1px solid var(--line);
+           background:var(--bg); color:var(--ink); cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  kbd { font-family:ui-monospace, Consolas, monospace; font-size:12px; border:1px solid var(--line);
+        border-bottom-width:2px; border-radius:4px; padding:0 5px; background:var(--bg); }
+  .apps { list-style:none; padding:0; margin:16px 0 0; display:grid; gap:8px; }
+  .apps li { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px;
+             border:1px solid var(--line); border-radius:8px; cursor:pointer; }
+  .apps li.current { border-color:var(--accent); box-shadow:inset 3px 0 0 var(--accent); }
+  .ans { font-weight:600; color:var(--muted); }
+  .ans.yes { color:var(--yes); } .ans.no { color:var(--no); } .ans.unsure { color:var(--unsure); }
+  .note { width:100%; margin-top:14px; padding:8px 10px; border:1px solid var(--line); border-radius:7px;
+          background:var(--bg); color:var(--ink); font:inherit; }
+  .legend { margin-top:16px; color:var(--muted); font-size:13px; display:flex; flex-wrap:wrap; gap:6px 16px; }
+  .status { margin-top:10px; font-size:13px; color:var(--muted); min-height:1.3em; }
+  .done { text-align:center; padding:24px 8px; }
+  code { font-family:ui-monospace, Consolas, monospace; font-size:13px; }
+  .howto { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px;
+           margin-bottom:12px; font-size:14px; }
+  .howto summary { cursor:pointer; font-weight:600; }
+  .howto ol { margin:8px 0 4px; padding-left:20px; }
+  .howto li { margin:3px 0; }
+  .howto p { margin:4px 0 2px; color:var(--muted); }
+  .coordrow { display:flex; flex-wrap:wrap; gap:4px 18px; font-family:ui-monospace, Consolas, monospace;
+              font-size:16px; margin-top:8px; }
+  .hint { color:var(--muted); font-size:13px; margin-top:2px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Serviceability Checker</h1>
+    <div class="progress" id="progress"></div>
+  </header>
+  <div class="bar"><span id="bar"></span></div>
+  <details class="howto" id="howto" open>
+    <summary>How to check a point accurately (exact location, no name search)</summary>
+    <ol>
+      <li>Open the app's website in Chrome or Edge and press <kbd>F12</kbd>, then <strong>&#8942;</strong> &rarr; <strong>More tools</strong> &rarr; <strong>Sensors</strong>.</li>
+      <li>Under <strong>Location</strong>, choose <strong>Other&hellip;</strong> and paste the latitude (<kbd>L</kbd>) and longitude (<kbd>G</kbd>) shown below.</li>
+      <li>On the website, click <strong>Detect my location</strong> (allow location access if asked).</li>
+      <li>Check the address the site shows is in the same area as the place name, then record <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd>.</li>
+    </ol>
+    <p>Why: searching by name is ambiguous (there are several "Kuvempu Nagar"s), so it can silently check the wrong place.</p>
+  </details>
+  <section class="card" id="card" aria-live="polite"></section>
+  <div class="status" id="status" role="status"></div>
+  <div class="legend">
+    <span><kbd>1</kbd> Serviceable</span><span><kbd>2</kbd> Not serviceable</span><span><kbd>3</kbd> Unsure</span>
+    <span><kbd>Backspace</kbd> Undo</span><span><kbd>&larr;</kbd> <kbd>&rarr;</kbd> Previous / next point</span>
+    <span><kbd>L</kbd> Copy latitude</span><span><kbd>G</kbd> Copy longitude</span>
+    <span><kbd>P</kbd> Copy place name</span><span><kbd>C</kbd> Copy "lat, lng"</span><span><kbd>M</kbd> Open map</span>
+    <span><kbd>N</kbd> Note</span><span><kbd>D</kbd> Download CSV</span>
+  </div>
+</main>
+<script>
+const POINTS = [{"id": "BEN-001", "city": "bengaluru", "pincode": 560014, "office": "Jalahalli East", "point_type": "high_demand", "demand_tier": 0, "lat": 13.0759, "lng": 77.53727, "h3": "88601696c9fffff", "demand_index": 38.1, "in_core": true, "label": "Kuvempu Nagar 2nd Stage, Kuvempunagara, Bengaluru North City Corporation, Bengaluru"}, {"id": "BEN-002", "city": "bengaluru", "pincode": 560063, "office": "A F Station Yelahanka", "point_type": "high_demand", "demand_tier": 0, "lat": 13.12805, "lng": 77.6182, "h3": "886016974bfffff", "demand_index": 48.4, "in_core": true, "label": "Dwaraka Nagar, Kogilu, Bengaluru North City Corporation, Bengaluru"}, {"id": "BEN-003", "city": "bengaluru", "pincode": 560067, "office": "Kadugodi Extention SO", "point_type": "low_demand", "demand_tier": 0, "lat": 13.00029, "lng": 77.7721, "h3": "88618921e1fffff", "demand_index": 0.3, "in_core": true, "label": "Kadugodi, Bengaluru East City Corporation, Bengaluru"}, {"id": "BEN-004", "city": "bengaluru", "pincode": 560087, "office": "Vartur", "point_type": "low_demand", "demand_tier": 0, "lat": 12.92565, "lng": 77.71174, "h3": "88618920d7fffff", "demand_index": 0.5, "in_core": true, "label": "Gunjur, Bengaluru East City Corporation, Bengaluru"}, {"id": "BEN-005", "city": "bengaluru", "pincode": 560098, "office": "Rajarajeshwarinagar", "point_type": "low_demand", "demand_tier": 0, "lat": 12.91148, "lng": 77.50087, "h3": "8860145135fffff", "demand_index": 11.3, "in_core": true, "label": "BEML Layout 7th Phase, Mylasandra, Bengaluru West City Corporation, Bengaluru"}, {"id": "BEN-006", "city": "bengaluru", "pincode": 560103, "office": "Bellandur", "point_type": "low_demand", "demand_tier": 0, "lat": 12.93336, "lng": 77.65705, "h3": "886189250bfffff", "demand_index": 0.1, "in_core": true, "label": "Agaram, Bengaluru Central City Corporation, Bengaluru"}, {"id": "BEN-007", "city": "bengaluru", "pincode": 562162, "office": "Madanayakanahalli", "point_type": "high_demand", "demand_tier": 0, "lat": 13.06114, "lng": 77.46126, "h3": "88601459b3fffff", "demand_index": 42.0, "in_core": false, "label": "Bangalore - Nelamangala Expressway, Madhavara, Madanayakanahalli"}, {"id": "BEN-008", "city": "bengaluru", "pincode": 560007, "office": "Agram", "point_type": "high_demand", "demand_tier": 1, "lat": 12.97092, "lng": 77.61976, "h3": "8861892ed3fffff", "demand_index": 70.3, "in_core": true, "label": "Trinity Church Road, Gowthamapura, Agaram, Bengaluru Central City Corporation, Bengaluru"}, {"id": "BEN-009", "city": "bengaluru", "pincode": 560018, "office": "Chamrajpet (Bangalore)", "point_type": "high_demand", "demand_tier": 1, "lat": 12.95615, "lng": 77.56054, "h3": "8860145a67fffff", "demand_index": 66.3, "in_core": true, "label": "Chamarajapete, Bengaluru Central City Corporation, Bengaluru"}, {"id": "BEN-010", "city": "bengaluru", "pincode": 560042, "office": "Sivan Chetty Gardens", "point_type": "high_demand", "demand_tier": 1, "lat": 12.97841, "lng": 77.61567, "h3": "8861892e99fffff", "demand_index": 74.7, "in_core": true, "label": "Dickenson Road, Hanumanthappa Layout, K Kamaraj Ward, Bengaluru Central City Corporation, Bengaluru"}, {"id": "BEN-011", "city": "bengaluru", "pincode": 560046, "office": "Benson Town", "point_type": "high_demand", "demand_tier": 1, "lat": 13.0009, "lng": 77.60341, "h3": "8860145b6dfffff", "demand_index": 71.2, "in_core": true, "label": "Channapa Garden Link Road, Jayamahal Extension, Jayamahal, Bengaluru Central City Corporation, Bengaluru"}, {"id": "BEN-012", "city": "bengaluru", "pincode": 560056, "office": "Bnagalore Viswavidalaya", "point_type": "high_demand", "demand_tier": 1, "lat": 12.94891, "lng": 77.48887, "h3": "8860145a85fffff", "demand_index": 53.4, "in_core": true, "label": "3rd Main, Bhuvaneshwari Nagara 1st Stage, Jnana Bharathi Ward, Bengaluru West City Corporation, Bengaluru"}, {"id": "BEN-013", "city": "bengaluru", "pincode": 560085, "office": "Girinagar (Bangalore)", "point_type": "high_demand", "demand_tier": 1, "lat": 12.93376, "lng": 77.54754, "h3": "8860145a09fffff", "demand_index": 80.6, "in_core": true, "label": "8th Cross Road, Hosakerehalli Layout, Swamy Vivekananda Ward, Bengaluru West City Corporation, Bengaluru"}, {"id": "BEN-014", "city": "bengaluru", "pincode": 560090, "office": "Chikkabanavara", "point_type": "high_demand", "demand_tier": 1, "lat": 13.0685, "lng": 77.50767, "h3": "88601696dbfffff", "demand_index": 69.2, "in_core": true, "label": "Geleyara Balaga Layout, Abbigere, Bengaluru North City Corporation, Bengaluru"}, {"id": "BEN-015", "city": "bengaluru", "pincode": 560002, "office": "Sri Jayachamarajendra Road", "point_type": "high_demand", "demand_tier": 2, "lat": 12.95607, "lng": 77.58581, "h3": "88618925b1fffff", "demand_index": 85.3, "in_core": true, "label": "Lalbagh Road, Shanti Nagar, Bengaluru Central City Corporation, Bengaluru"}, {"id": "BEN-016", "city": "bengaluru", "pincode": 560004, "office": "Basavanagudi", "point_type": "high_demand", "demand_tier": 2, "lat": 12.94863, "lng": 77.57305, "h3": "8860145a6dfffff", "demand_index": 93.4, "in_core": true, "label": "ವಾಣಿ ವಿಲಾಸ ರಸ್ತೆ, Gandhi Bazaar, Basavanagudi, Bengaluru Central City Corporation, Bengaluru"}, {"id": "BEN-017", "city": "bengaluru", "pincode": 560010, "office": "Rajajinagar", "point_type": "high_demand", "demand_tier": 2, "lat": 13.00106, "lng": 77.55287, "h3": "8860145b3bfffff", "demand_index": 92.0, "in_core": true, "label": "Ketamaranahalli, Basaveshwaranagar, Bengaluru West City Corporation, Bengaluru"}, {"id": "BEN-018", "city": "bengaluru", "pincode": 560021, "office": "Gayathrinagar", "point_type": "high_demand", "demand_tier": 2, "lat": 13.00104, "lng": 77.56129, "h3": "8860145b39fffff", "demand_index": 85.1, "in_core": true, "label": "1st Cross Road, Maruthi Extension, Kuvempu Ward, Bengaluru West City Corporation, Bengaluru"}, {"id": "BEN-019", "city": "bengaluru", "pincode": 560024, "office": "H.A. Farm", "point_type": "high_demand", "demand_tier": 2, "lat": 13.05329, "lng": 77.60008, "h3": "8861892c87fffff", "demand_index": 87.9, "in_core": true, "label": "Coffee Board Layout, Kempapura, Bengaluru North City Corporation, Bengaluru"}, {"id": "BEN-020", "city": "bengaluru", "pincode": 560055, "office": "Milk Colony", "point_type": "high_demand", "demand_tier": 2, "lat": 13.0085, "lng": 77.56563, "h3": "8860145b3dfffff", "demand_index": 94.2, "in_core": true, "label": "Malleswaram, Bengaluru West City Corporation, Bengaluru"}, {"id": "BEN-021", "city": "bengaluru", "pincode": 560080, "office": "Sadashivanagar", "point_type": "high_demand", "demand_tier": 2, "lat": 13.00845, "lng": 77.58248, "h3": "8860145b29fffff", "demand_index": 89.5, "in_core": true, "label": "7th Main Road, Upper Palace Orchard, Sadashivanagar, Bengaluru West City Corporation, Bengaluru"}, {"id": "HYD-022", "city": "hyderabad", "pincode": 500016, "office": "Begumpet", "point_type": "low_demand", "demand_tier": 0, "lat": 17.45224, "lng": 78.46178, "h3": "8860a2592bfffff", "demand_index": 5.9, "in_core": true, "label": "Motilal Nehru Nagar, Begumpet, Greater Hyderabad Municipal Corporation North Zone, Hyderabad"}, {"id": "HYD-023", "city": "hyderabad", "pincode": 500032, "office": "Manuu", "point_type": "low_demand", "demand_tier": 0, "lat": 17.40566, "lng": 78.34015, "h3": "8860a24a59fffff", "demand_index": 5.1, "in_core": false, "label": "Financial District"}, {"id": "HYD-024", "city": "hyderabad", "pincode": 500033, "office": "Dr.B R Ambedkar O.U", "point_type": "low_demand", "demand_tier": 0, "lat": 17.42139, "lng": 78.39217, "h3": "8860a259d7fffff", "demand_index": 20.2, "in_core": true, "label": "Road Number 52, BN Reddy Colony, Madhapur, Greater Hyderabad Municipal Corporation West Zone, Hyderabad"}, {"id": "HYD-025", "city": "hyderabad", "pincode": 500062, "office": "Dr As Rao Nagar", "point_type": "low_demand", "demand_tier": 0, "lat": 17.4691, "lng": 78.583, "h3": "8860b52c27fffff", "demand_index": 13.0, "in_core": true, "label": "Cherlapally, Greater Hyderabad Municipal Corporation East Zone, Hyderabad"}, {"id": "HYD-026", "city": "hyderabad", "pincode": 501401, "office": "Medchal", "point_type": "high_demand", "demand_tier": 0, "lat": 17.59374, "lng": 78.49487, "h3": "8860b19501fffff", "demand_index": 17.2, "in_core": false, "label": "Service Road"}, {"id": "HYD-027", "city": "hyderabad", "pincode": 502319, "office": "Patancheru Ph.II", "point_type": "low_demand", "demand_tier": 0, "lat": 17.54492, "lng": 78.25245, "h3": "8860b1b26dfffff", "demand_index": 0.5, "in_core": true, "label": "Outer Ring Road, Patancheru, Greater Hyderabad Municipal Corporation West Zone, Hyderabad"}, {"id": "HYD-028", "city": "hyderabad", "pincode": 502325, "office": "Aie Bollaram", "point_type": "low_demand", "demand_tier": 0, "lat": 17.55367, "lng": 78.32585, "h3": "8860a24931fffff", "demand_index": 3.7, "in_core": false, "label": "Sultanpur"}, {"id": "HYD-029", "city": "hyderabad", "pincode": 500041, "office": "Raj Bhawan (Hyderabad)", "point_type": "high_demand", "demand_tier": 1, "lat": 17.4152, "lng": 78.46535, "h3": "8860a2595dfffff", "demand_index": 54.9, "in_core": true, "label": "Khairatabad Flyover, Khairatabad, Greater Hyderabad Municipal Corporation Central Zone, Hyderabad"}, {"id": "HYD-030", "city": "hyderabad", "pincode": 500048, "office": "Hyderguda", "point_type": "high_demand", "demand_tier": 1, "lat": 17.37009, "lng": 78.42994, "h3": "8860a25855fffff", "demand_index": 69.5, "in_core": true, "label": "Attapur, Greater Hyderabad Municipal Corporation South Zone, Hyderabad"}, {"id": "HYD-031", "city": "hyderabad", "pincode": 500052, "office": "Svpnpa", "point_type": "high_demand", "demand_tier": 1, "lat": 17.32555, "lng": 78.42904, "h3": "8860a25a13fffff", "demand_index": 49.2, "in_core": true, "label": "Indra Reddy Nagar, Ward 60 Rajendra Nagar, Greater Hyderabad Municipal Corporation South Zone, Hyderabad"}, {"id": "HYD-032", "city": "hyderabad", "pincode": 500065, "office": "Fatehdarwaza", "point_type": "high_demand", "demand_tier": 1, "lat": 17.35581, "lng": 78.46414, "h3": "8860a25a21fffff", "demand_index": 64.5, "in_core": true, "label": "جامعہ نظامیہ روڈ, Ghansi Bazaar, Hussaini Alam, Greater Hyderabad Municipal Corporation South Zone, Hyderabad"}, {"id": "HYD-033", "city": "hyderabad", "pincode": 500069, "office": "R.C.Imarat", "point_type": "high_demand", "demand_tier": 1, "lat": 17.31209, "lng": 78.51502, "h3": "8860b525d1fffff", "demand_index": 45.7, "in_core": false, "label": "Lokayukta Colony, Almasguda, Balapur"}, {"id": "HYD-034", "city": "hyderabad", "pincode": 500098, "office": "Medipalli", "point_type": "high_demand", "demand_tier": 1, "lat": 17.41718, "lng": 78.58624, "h3": "8860b52c5dfffff", "demand_index": 64.0, "in_core": false, "label": "Sri Lakshmi Nagar Colony, Boduppal"}, {"id": "HYD-035", "city": "hyderabad", "pincode": 501301, "office": "Ghatkesar", "point_type": "high_demand", "demand_tier": 1, "lat": 17.46202, "lng": 78.60445, "h3": "8860b52d5bfffff", "demand_index": 39.3, "in_core": true, "label": "Railway Colony, Cherlapally, Greater Hyderabad Municipal Corporation East Zone, Hyderabad"}, {"id": "HYD-036", "city": "hyderabad", "pincode": 500028, "office": "Humayunnagar", "point_type": "high_demand", "demand_tier": 2, "lat": 17.38508, "lng": 78.43886, "h3": "8860a2580dfffff", "demand_index": 89.2, "in_core": true, "label": "Ward 72 Asif Nagar, Greater Hyderabad Municipal Corporation Central Zone, Hyderabad"}, {"id": "HYD-037", "city": "hyderabad", "pincode": 500034, "office": "Banjara Hills", "point_type": "high_demand", "demand_tier": 2, "lat": 17.41491, "lng": 78.44809, "h3": "8860a25953fffff", "demand_index": 88.1, "in_core": true, "label": "Banjara Hills Road Number 10, Gaffar Khan Colony, Ward 93 Banjara Hills, Greater Hyderabad Municipal Corporation Central Zone, Hyderabad"}, {"id": "HYD-038", "city": "hyderabad", "pincode": 500036, "office": "Old Malakpet", "point_type": "high_demand", "demand_tier": 2, "lat": 17.37151, "lng": 78.51623, "h3": "8860a25b4dfffff", "demand_index": 93.7, "in_core": true, "label": "Residential Raod, Saleem Nagar, Moosarambagh, Greater Hyderabad Municipal Corporation South Zone, Hyderabad"}, {"id": "HYD-039", "city": "hyderabad", "pincode": 500059, "office": "Saidabad (Hyderabad)", "point_type": "high_demand", "demand_tier": 2, "lat": 17.36415, "lng": 78.5204, "h3": "8860b525a7fffff", "demand_index": 91.2, "in_core": true, "label": "Tirumala Hill Colony, Ward 24 Saidabad, Greater Hyderabad Municipal Corporation South Zone, Hyderabad"}, {"id": "HYD-040", "city": "hyderabad", "pincode": 500061, "office": "Sitaphalmandi", "point_type": "high_demand", "demand_tier": 2, "lat": 17.41606, "lng": 78.51714, "h3": "8860b52cd1fffff", "demand_index": 82.0, "in_core": true, "label": "Boudha Nagar, Ward 146 Boudha Nagar, Greater Hyderabad Municipal Corporation North Zone, Hyderabad"}, {"id": "HYD-041", "city": "hyderabad", "pincode": 500085, "office": "Jntu Kukat Pally", "point_type": "high_demand", "demand_tier": 2, "lat": 17.49557, "lng": 78.39365, "h3": "8860a24b61fffff", "demand_index": 93.3, "in_core": true, "label": "shortcut to girls hostel, Ward 114 KPHB Colony, Greater Hyderabad Municipal Corporation West Zone, Hyderabad"}, {"id": "HYD-042", "city": "hyderabad", "pincode": 500095, "office": "State Bank Of India", "point_type": "high_demand", "demand_tier": 2, "lat": 17.38579, "lng": 78.482, "h3": "8860a25b03fffff", "demand_index": 82.1, "in_core": true, "label": "Bank Street, Sultan Bazar, Ward 77 Jambagh, Greater Hyderabad Municipal Corporation Central Zone, Hyderabad"}, {"id": "PUN-043", "city": "pune", "pincode": 411006, "office": "Yerwada T.S.", "point_type": "low_demand", "demand_tier": 0, "lat": 18.5463, "lng": 73.8554, "h3": "88608851ddfffff", "demand_index": 2.6, "in_core": true, "label": "Mandalay Lines, Pune"}, {"id": "PUN-044", "city": "pune", "pincode": 411027, "office": "Sangavi", "point_type": "low_demand", "demand_tier": 0, "lat": 18.58705, "lng": 73.80644, "h3": "886088422dfffff", "demand_index": 13.3, "in_core": false, "label": "Kate Vasti Road, Pimple Saudagar, Pimpri-Chinchwad"}, {"id": "PUN-045", "city": "pune", "pincode": 411041, "office": "Sinhgad Technical Education Society", "point_type": "low_demand", "demand_tier": 0, "lat": 18.43674, "lng": 73.81807, "h3": "886088cda3fffff", "demand_index": 9.4, "in_core": false, "label": "Dhayari"}, {"id": "PUN-046", "city": "pune", "pincode": 411047, "office": "Lohogaon", "point_type": "low_demand", "demand_tier": 0, "lat": 18.60071, "lng": 73.94172, "h3": "8860885a5dfffff", "demand_index": 6.1, "in_core": false, "label": "Pimpri-Chinchwad"}, {"id": "PUN-047", "city": "pune", "pincode": 411058, "office": "Warje", "point_type": "low_demand", "demand_tier": 0, "lat": 18.49229, "lng": 73.77739, "h3": "886088554bfffff", "demand_index": 0.7, "in_core": true, "label": "NDA Road, Bavdhan, Pune"}, {"id": "PUN-048", "city": "pune", "pincode": 412105, "office": "Alandi Devachi", "point_type": "low_demand", "demand_tier": 0, "lat": 18.71132, "lng": 73.85204, "h3": "8860885993fffff", "demand_index": 5.3, "in_core": false, "label": "Khed, Pune, Maharashtra, 411035, India"}, {"id": "PUN-049", "city": "pune", "pincode": 412308, "office": "Phursungi", "point_type": "low_demand", "demand_tier": 0, "lat": 18.46428, "lng": 73.94517, "h3": "886088c991fffff", "demand_index": 3.9, "in_core": false, "label": "Manter Wadi"}, {"id": "PUN-050", "city": "pune", "pincode": 411023, "office": "N.D.A. Khadakwasla", "point_type": "high_demand", "demand_tier": 1, "lat": 18.46394, "lng": 73.78546, "h3": "8860885703fffff", "demand_index": 67.6, "in_core": false, "label": "Shivane, Dhayari"}, {"id": "PUN-051", "city": "pune", "pincode": 411034, "office": "Kasarwadi", "point_type": "high_demand", "demand_tier": 1, "lat": 18.6022, "lng": 73.82289, "h3": "8860884355fffff", "demand_index": 60.8, "in_core": false, "label": "Kasarwadi - Pimple Gurav Road, Kasarwadi, Pimpri-Chinchwad"}, {"id": "PUN-052", "city": "pune", "pincode": 411044, "office": "P.C.N.T.", "point_type": "low_demand", "demand_tier": 1, "lat": 18.66384, "lng": 73.76174, "h3": "88608841e9fffff", "demand_index": 20.6, "in_core": false, "label": "Nigdi, Pimpri-Chinchwad"}, {"id": "PUN-053", "city": "pune", "pincode": 411068, "office": "Nanded (Pune)", "point_type": "high_demand", "demand_tier": 1, "lat": 18.45733, "lng": 73.7977, "h3": "8860885709fffff", "demand_index": 68.0, "in_core": false, "label": "Shivane, Dhayari"}, {"id": "PUN-054", "city": "pune", "pincode": 412115, "office": "Pirangut", "point_type": "high_demand", "demand_tier": 1, "lat": 18.50587, "lng": 73.76109, "h3": "886088550bfffff", "demand_index": 42.0, "in_core": true, "label": "Bhugaon"}, {"id": "PUN-055", "city": "pune", "pincode": 412307, "office": "Manjari Farm", "point_type": "high_demand", "demand_tier": 1, "lat": 18.50082, "lng": 73.95765, "h3": "8860885349fffff", "demand_index": 57.4, "in_core": false, "label": "Gopalpatti"}, {"id": "PUN-056", "city": "pune", "pincode": 412308, "office": "Phursungi", "point_type": "high_demand", "demand_tier": 1, "lat": 18.49343, "lng": 73.95351, "h3": "886088c9b5fffff", "demand_index": 53.8, "in_core": false, "label": "SP Residency Internal Road, Gopalpatti"}, {"id": "PUN-057", "city": "pune", "pincode": 411004, "office": "A.R. Shala", "point_type": "high_demand", "demand_tier": 2, "lat": 18.52415, "lng": 73.84302, "h3": "88608850e1fffff", "demand_index": 98.2, "in_core": true, "label": "G. H. Patil Path, Deccan Gymkhana, Pune"}, {"id": "PUN-058", "city": "pune", "pincode": 411005, "office": "Shivajinagar", "point_type": "high_demand", "demand_tier": 2, "lat": 18.52454, "lng": 73.85121, "h3": "88608850edfffff", "demand_index": 93.3, "in_core": true, "label": "Baburao Baloba Bahirat (Patil) Path, Shivajinagar, Pune"}, {"id": "PUN-059", "city": "pune", "pincode": 411017, "office": "Pimpri Colony", "point_type": "high_demand", "demand_tier": 2, "lat": 18.61458, "lng": 73.782, "h3": "886088406bfffff", "demand_index": 86.2, "in_core": false, "label": "जगतापनगर, Thergaon"}, {"id": "PUN-060", "city": "pune", "pincode": 411037, "office": "T.V. Nagar", "point_type": "high_demand", "demand_tier": 2, "lat": 18.49618, "lng": 73.85927, "h3": "88608852a5fffff", "demand_index": 80.2, "in_core": true, "label": "Chapekar Rasta, Swargate, Pune"}, {"id": "PUN-061", "city": "pune", "pincode": 411042, "office": "Guruwar Peth", "point_type": "high_demand", "demand_tier": 2, "lat": 18.50318, "lng": 73.85521, "h3": "886088501bfffff", "demand_index": 85.3, "in_core": true, "label": "Swargate, Pune"}, {"id": "PUN-062", "city": "pune", "pincode": 411043, "office": "Dhankawadi", "point_type": "high_demand", "demand_tier": 2, "lat": 18.45266, "lng": 73.85089, "h3": "88608852d5fffff", "demand_index": 88.7, "in_core": true, "label": "Lane Number 3, Katraj, Pune"}, {"id": "PUN-063", "city": "pune", "pincode": 411052, "office": "Navsahyadri", "point_type": "high_demand", "demand_tier": 2, "lat": 18.48686, "lng": 73.8142, "h3": "88608850dbfffff", "demand_index": 86.4, "in_core": true, "label": "Mavale vasti, Karve Nagar, Anandnagar"}];
+const APPS = ["Blinkit", "Zepto", "Swiggy Instamart", "Amazon Now"];
+const STORE_KEY = "hnp-checker-v1-" + POINTS.length + "-" + (POINTS[0] ? POINTS[0].id : "empty");
+const LABELS = { yes: "Serviceable", no: "Not serviceable", unsure: "Unsure" };
+
+let answers = loadAnswers();
+let idx = firstIncomplete();
+let appIdx = firstUnansweredApp(idx);
+
+function loadAnswers() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveAnswers() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(answers)); }
+  catch (e) { setStatus("Browser storage unavailable: press D regularly to download your results."); }
+}
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+function setStatus(text) { document.getElementById("status").textContent = text; }
+function record(i) { const id = POINTS[i].id; return answers[id] || (answers[id] = {}); }
+function isComplete(i) { const r = answers[POINTS[i].id]; return !!r && APPS.every(a => r[a]); }
+function firstIncomplete() { const i = POINTS.findIndex((_, k) => !isComplete(k)); return i === -1 ? POINTS.length : i; }
+function firstUnansweredApp(i) {
+  if (i >= POINTS.length) return 0;
+  const r = answers[POINTS[i].id] || {};
+  const k = APPS.findIndex(a => !r[a]);
+  return k === -1 ? 0 : k;
+}
+function nextIncompleteAfter(i) {
+  for (let k = i + 1; k < POINTS.length; k++) if (!isComplete(k)) return k;
+  return firstIncomplete();
+}
+
+function answer(value) {
+  if (idx >= POINTS.length) return;
+  const r = record(idx);
+  r[APPS[appIdx]] = value;
+  if (APPS.every(a => r[a])) r.checked_at = new Date().toISOString();
+  saveAnswers();
+  if (appIdx < APPS.length - 1) { appIdx++; render(); return; }
+  showPoint(nextIncompleteAfter(idx));
+}
+
+function undo() {
+  if (idx >= POINTS.length) { if (!POINTS.length) return; idx = POINTS.length - 1; appIdx = APPS.length - 1; }
+  else if (appIdx > 0) { appIdx--; }
+  else if (idx > 0) { idx--; appIdx = APPS.length - 1; }
+  else return;
+  const r = record(idx);
+  delete r[APPS[appIdx]];
+  delete r.checked_at;
+  saveAnswers();
+  render();
+}
+
+function showPoint(i) {
+  idx = Math.max(0, Math.min(i, POINTS.length));
+  appIdx = firstUnansweredApp(idx);
+  render();
+  if (idx < POINTS.length) copyText(POINTS[idx].lat.toFixed(6), false);
+}
+function step(delta) { showPoint(Math.max(0, Math.min((idx >= POINTS.length ? POINTS.length - 1 : idx) + delta, POINTS.length - 1))); }
+
+function coordText(p) { return p.lat.toFixed(5) + ", " + p.lng.toFixed(5); }
+async function copyText(text, announce) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const t = document.createElement("textarea");
+    t.value = text; document.body.appendChild(t); t.select();
+    try { document.execCommand("copy"); } finally { t.remove(); }
+  }
+  setStatus((announce ? "Copied: " : "Copied to clipboard: ") + text);
+}
+function openMap() {
+  if (idx >= POINTS.length) return;
+  const p = POINTS[idx];
+  window.open("https://www.google.com/maps?q=" + p.lat + "," + p.lng, "_blank", "noopener");
+}
+function focusNote() { const n = document.getElementById("note"); if (n) n.focus(); }
+function copyField(field) {
+  if (idx >= POINTS.length) return;
+  const p = POINTS[idx];
+  const text = field === "lat" ? p.lat.toFixed(6)
+    : field === "lng" ? p.lng.toFixed(6)
+    : field === "pair" ? coordText(p)
+    : (p.label || coordText(p));
+  copyText(text, true);
+}
+
+function slug(name) { return name.toLowerCase().replace(/[^a-z0-9]+/g, "_"); }
+function csvCell(value) {
+  const s = value === null || value === undefined ? "" : String(value);
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function download() {
+  const cols = ["id", "city", "pincode", "office", "point_type", "demand_tier", "lat", "lng", "h3",
+                "demand_index", "in_core", "label", ...APPS.map(slug), "note", "checked_at"];
+  const rows = POINTS.map(p => {
+    const r = answers[p.id] || {};
+    return [p.id, p.city, p.pincode, p.office, p.point_type, p.demand_tier, p.lat, p.lng, p.h3,
+            p.demand_index, p.in_core, p.label, ...APPS.map(a => r[a] || ""), r.note || "", r.checked_at || ""];
+  });
+  const csv = [cols, ...rows].map(row => row.map(csvCell).join(",")).join("\r\n");
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "validation_results.csv";
+  document.body.appendChild(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  setStatus("Downloaded validation_results.csv. Move it to data/processed/ in the project.");
+}
+
+function render() {
+  const done = POINTS.filter((_, k) => isComplete(k)).length;
+  document.getElementById("progress").textContent = done + " / " + POINTS.length + " points checked";
+  document.getElementById("bar").style.width = (POINTS.length ? 100 * done / POINTS.length : 0) + "%";
+  const card = document.getElementById("card");
+  if (idx >= POINTS.length) {
+    card.innerHTML = '<div class="done"><div class="place">All points checked</div>' +
+      '<p>Press <kbd>D</kbd> to download <code>validation_results.csv</code>, then move it to <code>data/processed/</code>.</p></div>';
+    return;
+  }
+  const p = POINTS[idx];
+  const r = answers[p.id] || {};
+  const city = p.city.charAt(0).toUpperCase() + p.city.slice(1);
+  const kind = p.point_type === "high_demand" ? "High-demand point" : "Low-demand point";
+  card.innerHTML =
+    '<div class="meta"><span>' + esc(p.id) + '</span><span>' + esc(city) + '</span><span>PIN ' + esc(p.pincode) +
+      '</span><span>' + esc(p.office) + '</span><span>' + kind + '</span><span>Demand index ' +
+      esc(p.demand_index === null ? "n/a" : p.demand_index) + '</span></div>' +
+    '<div class="coordrow"><span>Lat ' + p.lat.toFixed(6) + '</span><span>Lng ' + p.lng.toFixed(6) + '</span></div>' +
+    '<div class="place">' + esc(p.label || "Unnamed location") + '</div>' +
+    '<div class="hint">After "Detect my location", the address the app shows should be in this area.</div>' +
+    '<div class="actions">' +
+      '<button data-act="lat"><kbd>L</kbd> Copy latitude</button>' +
+      '<button data-act="lng"><kbd>G</kbd> Copy longitude</button>' +
+      '<button data-act="copy"><kbd>P</kbd> Copy place name</button>' +
+      '<button data-act="map"><kbd>M</kbd> Open map</button>' +
+      '<button data-act="prev"><kbd>&larr;</kbd> Previous</button>' +
+      '<button data-act="next">Next <kbd>&rarr;</kbd></button>' +
+    '</div>' +
+    '<ul class="apps">' + APPS.map((a, k) =>
+      '<li data-app="' + k + '" class="' + (k === appIdx ? "current" : "") + '"><span>' + esc(a) + '</span>' +
+      '<span class="ans ' + (r[a] || "") + '">' + (r[a] ? LABELS[r[a]] : (k === appIdx ? "Answer now: 1 / 2 / 3" : "—")) +
+      '</span></li>').join("") + '</ul>' +
+    '<input class="note" id="note" placeholder="Note (press N), e.g. shows 18 min, coming soon" value="' + esc(r.note || "") + '">';
+}
+
+document.getElementById("card").addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if (btn) {
+    const p = POINTS[idx];
+    ({ lat: () => copyField("lat"), lng: () => copyField("lng"), copy: () => copyField("label"),
+       map: openMap, prev: () => step(-1), next: () => step(1) })[btn.dataset.act]?.();
+    return;
+  }
+  const li = e.target.closest("li[data-app]");
+  if (li) { appIdx = Number(li.dataset.app); render(); }
+});
+document.getElementById("card").addEventListener("input", e => {
+  if (e.target.id !== "note" || idx >= POINTS.length) return;
+  record(idx).note = e.target.value;
+  saveAnswers();
+});
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") { if (e.key === "Enter" || e.key === "Escape") e.target.blur(); return; }
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const actions = {
+    "1": () => answer("yes"), "2": () => answer("no"), "3": () => answer("unsure"),
+    Backspace: undo, ArrowRight: () => step(1), ArrowLeft: () => step(-1),
+    l: () => copyField("lat"), L: () => copyField("lat"), g: () => copyField("lng"), G: () => copyField("lng"),
+    p: () => copyField("label"), P: () => copyField("label"), c: () => copyField("pair"), C: () => copyField("pair"),
+    m: openMap, M: openMap, n: focusNote, N: focusNote, d: download, D: download,
+  };
+  const action = actions[e.key];
+  if (action) { e.preventDefault(); action(); }
+});
+
+render();
+// Clipboard writes need a user gesture, so nothing is auto-copied on load.
+if (idx < POINTS.length) setStatus("Press L to copy the latitude into DevTools Sensors, then G for the longitude.");
+const howto = document.getElementById("howto");
+try { if (localStorage.getItem("hnp-checker-howto") === "closed") howto.open = false; } catch (e) {}
+howto.addEventListener("toggle", () => {
+  try { localStorage.setItem("hnp-checker-howto", howto.open ? "open" : "closed"); } catch (e) {}
+});
+</script>
+</body>
+</html>

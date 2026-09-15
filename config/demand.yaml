@@ -1,0 +1,36 @@
+# Demand index v0: per-hex features from WorldPop + OpenStreetMap.
+# Weights are ASSUMPTIONS (not sourced) — sensitivity-test them; keys must match hex columns.
+poi_categories:
+  office:
+    office: true
+    building: [office, commercial]
+    landuse: [commercial]
+  education:
+    amenity: [college, university]
+    building: [dormitory, university, college]
+    tourism: [hostel]
+  food_retail:
+    amenity: [cafe, restaurant, fast_food]
+    shop: [mall, supermarket, convenience, department_store]
+  residential_highrise:
+    building: [apartments]
+
+# Default index (v0): weighted mean of within-city percentile ranks. DECIDED 2026-09-15.
+weights:
+  density_per_km2: 0.50
+  food_retail: 0.20
+  office: 0.15
+  education: 0.10
+  residential_highrise: 0.05
+
+# Scenario toggles, written as extra columns demand_index_<name>. Weights are assumptions.
+scenarios:
+  v1b:
+    method: log_minmax_smoothed     # k=1 smoothing, log1p counts, density clipped at quantile, min-max per city
+    density_clip_quantile: 0.99
+    weights:
+      density_per_km2: 0.45
+      food_retail: 0.20
+      office: 0.20
+      education: 0.075
+      residential_highrise: 0.075

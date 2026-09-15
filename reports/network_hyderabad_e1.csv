@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860a25b69fffff,17.38636,78.51653,500013,Amberpet,"Hyderabad, Medchal",78.9,78.4,2094,2094,1800,294,0.0,3.89,69261,1
+2,8860a25b11fffff,17.37816,78.46891,500012,Begumbazar,Hyderabad,78.9,64.2,2094,2094,1596,498,0.0,3.89,54315,1
+3,8860a25b61fffff,17.39371,78.51237,500013,Amberpet,"Hyderabad, Medchal",77.0,56.5,2094,2094,933,1161,0.0,3.89,71671,4
+4,8860a2596dfffff,17.44533,78.49184,500003,Secunderabad,Hyderabad,59.7,74.6,2094,2094,813,1282,0.0,3.89,20636,2
+5,8860a2591dfffff,17.42976,78.44839,500082,I.M.Colony,"Hyderabad, Rangareddy",87.3,86.6,2094,2094,0,2094,0.0,3.89,0,1
+6,8860a25939fffff,17.4446,78.44869,500038,Sanjeev Reddy Nagar,Rangareddy,94.7,96.5,2094,2094,0,2094,0.0,3.89,0,2
+7,8860a2594bfffff,17.41535,78.47398,500029,Ramakrishna Mutt,Hyderabad,0.3,0.1,2094,2094,0,2094,0.0,3.89,0,1
+8,8860a2595bfffff,17.40756,78.45225,500004,Khairatabad,Hyderabad,92.1,86.1,2094,2094,0,2094,0.0,3.89,0,3
+9,8860a25b3bfffff,17.393,78.46921,500004,Khairatabad,Hyderabad,81.2,73.6,2094,2094,0,2094,0.0,3.89,0,2
+10,8860b52c99fffff,17.42327,78.50434,500025,Padmaraonagar,Hyderabad,86.1,82.3,2094,2094,0,2094,0.0,3.89,13134,2

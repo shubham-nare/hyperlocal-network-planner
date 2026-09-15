@@ -1,0 +1,13 @@
+# Exploratory cloud-kitchen opportunity score.  These are assumptions, not order data.
+# It ranks potential delivery-demand clusters from the same WorldPop + OSM inputs as
+# the dark-store planner.  Do not interpret the score as expected food orders or P&L.
+weights:
+  density_per_km2: 0.35
+  food_retail: 0.30
+  office: 0.20
+  education: 0.10
+  residential_highrise: 0.05
+
+# Keep recommended clusters apart so the shortlist represents distinct neighbourhoods,
+# not adjacent H3 cells in one high-scoring micro-market.
+minimum_separation_rings: 2
