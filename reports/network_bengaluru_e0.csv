@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,886016961bfffff,13.08335,77.55003,560097,Vidyaranyapura,Bangalore,53.2,28.5,2094,2094,2094,0,0.0,2.98,50511,1
+2,8860145b05fffff,13.00098,77.57814,560003,Malleswaram,Bangalore,87.3,81.5,2094,2094,1719,376,0.0,2.98,39881,2
+3,8860145a15fffff,12.94131,77.52661,560039,Nayandahalli,Bangalore,76.3,70.7,2094,2094,1705,389,0.0,2.98,38602,0
+4,8861892e21fffff,13.01555,77.69641,560036,Krishnarajapuram,Bangalore,54.3,53.9,2094,2094,1694,400,0.0,2.98,35975,2
+5,8860145917fffff,13.04603,77.51993,560057,Peenya Dasarahalli,Bangalore,48.5,21.6,2094,2094,1564,530,0.0,2.98,31989,1
+6,886014584dfffff,12.97866,77.53986,560040,Vijayanagar (Bangalore),Bangalore,71.2,58.0,2094,2094,1543,551,0.0,2.98,36355,3
+7,8860145861fffff,13.00111,77.53603,560086,West of Chord Road II stage,Bangalore,41.6,0.1,2094,2094,1230,864,0.0,2.98,36018,3
+8,8860145b2dfffff,13.01592,77.58681,560006,Training Command IAF,Bangalore,37.1,25.1,2094,2094,850,1244,0.0,2.98,21580,0
+9,886014582bfffff,13.00865,77.5151,560058,Peenya Small Industries,Bangalore,31.0,0.1,1905,1905,1905,0,0.0,2.71,38971,1
+10,8860145b51fffff,12.97109,77.56921,560053,Chickpet,Bangalore,74.8,70.6,1842,1842,406,1436,0.0,2.62,8309,0

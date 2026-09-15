@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860169619fffff,13.08332,77.55845,560097,Vidyaranyapura,Bangalore,74.1,60.8,1600,1600,1600,0,0.0,2.28,44063,0
+2,8861892ed3fffff,12.97092,77.61976,560007,Agram,Bangalore,70.3,77.0,1600,1600,1600,0,0.0,2.28,32873,1
+3,886014586bfffff,12.99365,77.53169,560079,K H B Colony,Bangalore,63.1,37.9,1600,1600,1500,100,0.0,2.28,44270,2
+4,8860145b67fffff,13.00842,77.5909,560006,Training Command IAF,Bangalore,43.7,34.2,1600,1600,1034,566,0.0,2.28,26308,1
+5,8860145b6bfffff,12.99346,77.59065,560052,Vasanth Nagar,Bangalore,85.1,96.3,1600,1600,892,708,0.0,2.28,17260,0
+6,8860145b05fffff,13.00098,77.57814,560003,Malleswaram,Bangalore,87.3,81.5,1600,1600,438,1162,0.0,2.28,39881,2
+7,8860145a31fffff,12.95627,77.52686,560040,Vijayanagar (Bangalore),Bangalore,81.7,71.3,1600,1600,303,1297,0.0,2.28,24826,3
+8,8860145b17fffff,12.9936,77.54853,560010,Rajajinagar,Bangalore,84.8,91.0,1600,1600,0,1600,0.0,2.28,17728,2
+9,88618924adfffff,12.91118,77.58505,560078,J P Nagar,Bangalore,86.1,87.2,1600,1600,0,1600,0.0,2.28,0,3
+10,8861892583fffff,12.94107,77.59398,560029,Tavarekere,Bangalore,82.3,84.5,1600,1600,0,1600,0.0,2.28,0,1

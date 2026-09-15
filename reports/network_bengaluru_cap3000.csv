@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8860145b05fffff,13.00098,77.57814,560003,Malleswaram,Bangalore,87.3,81.5,2942,2942,2687,255,0.0,4.18,39881,2
+2,8861892edbfffff,12.96342,77.62385,560007,Agram,Bangalore,27.0,0.1,2646,2646,2646,0,0.0,3.76,52841,0
+3,8860145845fffff,12.98616,77.53578,560079,K H B Colony,Bangalore,75.2,74.3,2504,2504,2504,0,0.0,3.56,44058,1
+4,886016961bfffff,13.08335,77.55003,560097,Vidyaranyapura,Bangalore,53.2,28.5,2036,2036,2036,0,0.0,2.9,50511,1
+5,8860145b41fffff,12.9785,77.5904,560001,Bangalore G.P.O.,Bangalore,53.0,71.5,2024,2024,1555,469,0.0,2.88,23458,1
+6,8860145a15fffff,12.94131,77.52661,560039,Nayandahalli,Bangalore,76.3,70.7,1808,1808,1808,0,0.0,2.57,38602,0
+7,8861892531fffff,12.95586,77.64479,560017,NAL,Bangalore,70.3,87.0,1808,1808,1808,0,0.0,2.57,28465,2
+8,8861892e87fffff,13.00082,77.6287,560033,Maruthi Sevanagar,Bangalore,90.1,87.8,1763,1763,1763,0,0.0,2.51,31677,0
+9,8861892e29fffff,13.00805,77.7005,560036,Krishnarajapuram,Bangalore,63.5,32.0,1717,1717,1717,0,0.0,2.44,38908,1
+10,8860169609fffff,13.09075,77.57964,560065,G.K.V.K.,Bangalore,59.0,62.3,1687,1687,1687,0,0.0,2.4,28482,1

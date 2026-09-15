@@ -1,0 +1,11 @@
+rank,h3,lat,lng,pincode,locality,district,demand_index,adoption_index,site_orders_per_day,incremental_orders_per_day,new_coverage_orders,capacity_relief_orders,cannibalised_share,breakeven_cover,pop_in_reach_uncovered_by_brand,competitor_stores_reaching_hex
+1,8861892531fffff,12.95586,77.64479,560017,NAL,Bangalore,70.3,87.0,2094,2094,2094,0,0.0,2.98,28465,2
+2,8860145b07fffff,13.00101,77.56971,560003,Malleswaram,Bangalore,96.5,96.0,2094,2094,1623,472,0.0,2.98,19849,2
+3,8860145b21fffff,13.01594,77.57839,560006,Training Command IAF,Bangalore,56.1,62.7,2094,2094,1172,922,0.0,2.98,15122,0
+4,88618925a9fffff,12.95598,77.61108,560025,Museum Road,Bangalore,48.0,43.8,2094,2094,990,1104,0.0,2.98,18310,3
+5,8860145a65fffff,12.95613,77.56896,560004,Basavanagudi,Bangalore,90.8,90.8,2094,2094,751,1343,0.0,2.98,16610,2
+6,8860145a43fffff,12.92626,77.55162,560085,Girinagar (Bangalore),Bangalore,79.9,63.3,2094,2094,690,1405,0.0,2.98,10076,2
+7,8860145b11fffff,12.9861,77.55262,560010,Rajajinagar,Bangalore,91.2,90.6,2094,2094,634,1460,0.0,2.98,8983,2
+8,8860145b57fffff,12.97858,77.56513,560023,Magadi Road,Bangalore,77.4,80.1,2094,2094,0,2094,0.0,2.98,0,1
+9,886189258bfffff,12.93358,77.59807,560041,Jayanagar,Bangalore,76.9,72.9,2094,2094,0,2094,0.0,2.98,0,2
+10,886189259bfffff,12.92617,77.57688,560070,Jayanagar West,Bangalore,92.1,87.1,2094,2094,0,2094,0.0,2.98,0,2
