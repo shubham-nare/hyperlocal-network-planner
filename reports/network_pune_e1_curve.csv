@@ -1,0 +1,6 @@
+max_new_sites,status,incremental_orders_per_day,served_share,cannibalised_share
+0,Optimal,0,0.7635966928324819,
+5,Optimal,10472,0.8345,0.0
+10,Optimal,20397,0.9017,0.0
+20,Feasible (time limit),30469,0.9699,0.0
+30,Optimal,33633,0.9913,0.048
