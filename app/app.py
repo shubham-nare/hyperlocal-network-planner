@@ -38,7 +38,11 @@ def load_city_data(city: str) -> tuple[gpd.GeoDataFrame, gpd.GeoDataFrame]:
     res = config["defaults"]["h3_resolution"]
     coverage = gpd.read_file(ROOT / "data" / "processed" / f"{city}_coverage_radius_r{res}.gpkg")
     pins = gpd.read_file(ROOT / "data" / "processed" / f"{city}_hex_pincode_r{res}.gpkg")
-    cols = ["h3", "pincode", "pincode_office", "pincode_district"]
+    feature_cols = [
+        "density_per_km2", "food_retail", "office", "education", "residential_highrise",
+        "density_per_km2_pct", "food_retail_pct", "office_pct", "education_pct", "residential_highrise_pct",
+    ]
+    cols = ["h3", "pincode", "pincode_office", "pincode_district"] + [c for c in feature_cols if c in pins.columns]
     coverage = coverage.merge(pins[cols], on="h3", how="left")
     stores = gpd.read_file(ROOT / "data" / "processed" / f"{city}_stores.gpkg")
     return coverage, stores
@@ -187,21 +191,24 @@ def main() -> None:
     if not run:
         st.info("Set assumptions, then run a scenario. The defaults reproduce the calibrated base case as closely as the interactive candidate screen allows.")
         return
-    with st.spinner("Optimising capacity-limited demand allocation…"):
-        result = dark_store_result(city, elasticity, growth, capacity, max_new)
-    base, sol, total = result["base"], result["solution"], result["total"]
-    incremental = sol.served_total - base.served_total
-    a, b, c, d = st.columns(4)
-    a.metric("Incremental orders/day", f"{incremental:,.0f}")
-    b.metric("Demand served", f"{base.served_total / total:.1%}", f"{sol.served_total / total - base.served_total / total:+.1%}")
-    c.metric("Break-even floor", f"{result['breakeven']:,.0f}/day")
-    d.metric("Calibrated reach", f"{result['budget'] / 1000:.3g} km")
-    st.caption(f"Solver: {sol.status}. Screened {result['candidate_count']:,} candidate cells before the interactive solve.")
-    score = result["coverage"]["unserved_orders"]
-    st.pydeck_chart(deck(point_frame(result["coverage"], score), result["stores"], result["proposals"], city))
-    st.subheader("Recommended areas")
-    st.dataframe(result["proposals"], hide_index=True, use_container_width=True)
-    st.warning("Review permits, micro-market rent, rider supply, competition, and true local demand before opening a site. The store snapshot is from March 2026 and undercounts current networks.")
+    try:
+        with st.spinner("Optimising capacity-limited demand allocation…"):
+            result = dark_store_result(city, elasticity, growth, capacity, max_new)
+        base, sol, total = result["base"], result["solution"], result["total"]
+        incremental = sol.served_total - base.served_total
+        a, b, c, d = st.columns(4)
+        a.metric("Incremental orders/day", f"{incremental:,.0f}")
+        b.metric("Demand served", f"{base.served_total / total:.1%}", f"{sol.served_total / total - base.served_total / total:+.1%}")
+        c.metric("Break-even floor", f"{result['breakeven']:,.0f}/day")
+        d.metric("Calibrated reach", f"{result['budget'] / 1000:.3g} km")
+        st.caption(f"Solver: {sol.status}. Screened {result['candidate_count']:,} candidate cells before the interactive solve.")
+        score = result["coverage"]["unserved_orders"]
+        st.pydeck_chart(deck(point_frame(result["coverage"], score), result["stores"], result["proposals"], city))
+        st.subheader("Recommended areas")
+        st.dataframe(result["proposals"], hide_index=True, use_container_width=True)
+        st.warning("Review permits, micro-market rent, rider supply, competition, and true local demand before opening a site. The store snapshot is from March 2026 and undercounts current networks.")
+    except Exception as exc:
+        st.error(f"Scenario optimisation failed: {exc}. Try adjusting slider assumptions (e.g. increase store capacity or check break-even floor).")
 
 
 if __name__ == "__main__":

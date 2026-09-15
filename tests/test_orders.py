@@ -42,3 +42,10 @@ def test_adoption_index_is_weighted_mean_of_percentiles_and_rejects_density():
     assert got.tolist() == pytest.approx([75.0, 62.5])
     with pytest.raises(ValueError):
         adoption_index(hexes.assign(density_per_km2_pct=0.5), {"density_per_km2": 0.5, "office": 0.5})
+
+
+def test_adoption_index_rejects_missing_columns():
+    hexes = pd.DataFrame({"office_pct": [0.0, 1.0]})
+    with pytest.raises(ValueError, match="missing required columns"):
+        adoption_index(hexes, {"office": 0.1, "food_retail": 0.3})
+

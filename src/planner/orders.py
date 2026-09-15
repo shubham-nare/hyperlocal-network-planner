@@ -11,6 +11,10 @@ def adoption_index(hexes: pd.DataFrame, weights: dict[str, float]) -> pd.Series:
     """
     if "density_per_km2" in weights:
         raise ValueError("adoption index must exclude density; population already carries it")
+    needed = [f"{k}_pct" for k in weights]
+    missing = set(needed) - set(hexes.columns)
+    if missing:
+        raise ValueError(f"hexes missing required columns: {sorted(missing)}")
     total = sum(weights.values())
     return 100 * sum(w * hexes[f"{k}_pct"] for k, w in weights.items()) / total
 
