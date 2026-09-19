@@ -71,3 +71,29 @@ def breakeven_orders_per_day(gross_profit_per_order: float, variable_cost_per_or
     """Orders/day at which store contribution is zero; inf when each order loses money before fixed costs."""
     unit_margin = gross_profit_per_order - variable_cost_per_order
     return math.inf if unit_margin <= 0 else fixed_cost_per_day / unit_margin
+
+
+def calibrated_national_economics(econ: dict) -> dict[str, float]:
+    """Derive gross-profit and variable-cost per order from config/economics.yaml.
+
+    Single source of truth for this derivation: derive the national average rent/day from
+    disclosed segment results, then solve for the variable cost that makes fixed + variable
+    reproduce the disclosed contribution-cost pool at the disclosed throughput. Using
+    ``contribution_costs`` directly as "variable cost" double-counts rent, since Contribution
+    already deducts it -- the exact bug this function exists to make impossible to repeat in a
+    second caller (build_unit_economics.py's own calibration is the original; build_scenarios.py
+    and the API both call this instead of re-deriving it).
+    """
+    quarter_names = list(econ["quarters"])
+    cal_name = econ["calibration_quarter"]
+    cal_q = Quarter(**econ["quarters"][cal_name])
+    prev_q = Quarter(**econ["quarters"][quarter_names[quarter_names.index(cal_name) - 1]])
+    calib = per_order(cal_q)
+    other_fixed = econ["store"]["other_fixed_cost_per_day_inr"]
+    rent_nat_day = derived_rent_cr(cal_q) * CRORE / ((prev_q.stores_end + cal_q.stores_end) / 2) / (3 * DAYS_PER_MONTH)
+    variable_cost_per_order = calibrate_variable_cost(calib["contribution_costs"], rent_nat_day + other_fixed, calib["orders_per_store_day"])
+    return {
+        "gross_profit_per_order": calib["gross_profit"],
+        "variable_cost_per_order": variable_cost_per_order,
+        "other_fixed_cost_per_day": other_fixed,
+    }

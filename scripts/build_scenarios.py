@@ -17,7 +17,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from optimize_network import city_inputs, load_config  # noqa: E402
 
-from planner.economics import DAYS_PER_MONTH, Quarter, calibrate_variable_cost, derived_rent_cr, per_order  # noqa: E402
+from planner.economics import calibrated_national_economics  # noqa: E402
 from planner.huff import pairwise_distance_km  # noqa: E402
 from planner.scenarios import capex_constrained_portfolio, competitor_entry_impact, rent_shock  # noqa: E402
 
@@ -30,25 +30,15 @@ def main() -> None:
     c = load_config(Args())
     city = "hyderabad"
     econ = yaml.safe_load(open("config/economics.yaml", encoding="utf-8"))
-    quarter_names = list(econ["quarters"])
-    cal_name = econ["calibration_quarter"]
-    cal_q = Quarter(**econ["quarters"][cal_name])
-    prev_q = Quarter(**econ["quarters"][quarter_names[quarter_names.index(cal_name) - 1]])
-    calib = per_order(cal_q)
-    # Same calibration build_unit_economics.py uses: derive the NATIONAL average rent/day from
-    # disclosed segment results, then solve for the true variable cost so fixed+variable
-    # reproduces the disclosed cost pool. Using contribution_costs directly as "variable" (an
-    # earlier draft of this script did) double-counts rent, since Contribution already deducts
-    # it -- exactly the mistake Week 3 was built to avoid.
-    other_fixed = econ["store"]["other_fixed_cost_per_day_inr"]
-    rent_nat_day = derived_rent_cr(cal_q) * 1e7 / ((prev_q.stores_end + cal_q.stores_end) / 2) / (3 * DAYS_PER_MONTH)
-    variable_cost_per_order = calibrate_variable_cost(calib["contribution_costs"], rent_nat_day + other_fixed, calib["orders_per_store_day"])
+    national = calibrated_national_economics(econ)
+    other_fixed = national["other_fixed_cost_per_day"]
+    variable_cost_per_order = national["variable_cost_per_order"]
 
     print("=== Scenario 1: rent shock ===")
     for shock in (0.25, -0.20):
         result = rent_shock(city=city, rent_per_sqft_month=econ["cities"][city]["rent_per_sqft_month_inr"],
                             size_sqft=econ["store"]["size_sqft"], other_fixed_cost_per_day=other_fixed,
-                            gross_profit_per_order=calib["gross_profit"], variable_cost_per_order=variable_cost_per_order,
+                            gross_profit_per_order=national["gross_profit_per_order"], variable_cost_per_order=variable_cost_per_order,
                             shock_pct=shock)
         print(f"  rent {shock:+.0%}: Rs.{result.baseline_rent_per_sqft_month:.0f} -> Rs.{result.shocked_rent_per_sqft_month:.0f}/sqft/month | "
               f"break-even {result.baseline_breakeven_orders_per_day:.0f} -> {result.shocked_breakeven_orders_per_day:.0f} orders/day "
