@@ -3,20 +3,25 @@ scenarios.py that scripts/build_scenarios.py already validated against real Hyde
 data -- this router adds no new modeling, only an HTTP wrapper and a persisted audit
 trail (ScenarioRun) of every scenario actually run.
 
-Known limitation: capex-portfolio solves a real MIP synchronously (no Celery/Redis worker
-is wired up yet), so it is capped to a short solver time limit and may return a
-time-limited (non-optimal) solution for large budgets rather than blocking the request.
+capex-portfolio solves a real MIP and can be slow for large budgets. By default it runs
+synchronously with a short (30s) solver time limit. Pass run_async=true to instead
+dispatch it to Celery (api/tasks.py) and poll GET /scenarios/tasks/{task_id} -- but note
+no Redis broker is running in this development environment (see api/celery_app.py's
+docstring), so the async path is untested against a live worker here.
 """
 from __future__ import annotations
 
 import h3
 import numpy as np
+from celery.result import AsyncResult
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from api.celery_app import celery_app
 from api.deps import get_city_inputs, get_economics_config, get_network_config, get_session
 from api.schemas import CapexPortfolioRequest, CompetitorEntryRequest, RentShockRequest
+from api.tasks import run_capex_portfolio_task
 from planner.db_models import ScenarioRun, StoreRecord
 from planner.economics import calibrated_national_economics
 from planner.scenarios import capex_constrained_portfolio, competitor_entry_impact, rent_shock
@@ -94,10 +99,17 @@ def run_competitor_entry(request: CompetitorEntryRequest, session: Session = Dep
 
 
 @router.post("/capex-portfolio")
-def run_capex_portfolio(request: CapexPortfolioRequest, session: Session = Depends(get_session)) -> dict:
+def run_capex_portfolio(request: CapexPortfolioRequest, run_async: bool = False,
+                        session: Session = Depends(get_session)) -> dict:
     c = get_network_config()
     if request.city not in c["breakeven"]:
         raise HTTPException(404, f"no break-even calibration for city {request.city!r}")
+
+    if run_async:
+        task = run_capex_portfolio_task.delay(request.city, request.capex_budget_cr,
+                                              request.capex_per_store_cr, request.capacity)
+        return {"task_id": task.id, "status": task.status}
+
     try:
         cov, demand, sites, budget_m = get_city_inputs(request.city)
     except FileNotFoundError as exc:
@@ -112,3 +124,14 @@ def run_capex_portfolio(request: CapexPortfolioRequest, session: Session = Depen
     }
     payload["id"] = _persist(session, "capex_portfolio", request.city, request.model_dump(), payload)
     return payload
+
+
+@router.get("/tasks/{task_id}")
+def get_task_status(task_id: str) -> dict:
+    result = AsyncResult(task_id, app=celery_app)
+    body = {"task_id": task_id, "status": result.status}
+    if result.successful():
+        body["result"] = result.result
+    elif result.failed():
+        body["error"] = str(result.result)
+    return body

@@ -1,0 +1,82 @@
+# NOT YET RUN in this environment: Docker Desktop isn't installed here (no admin
+# rights / WSL2 available -- see CONTEXT.md's Phase 5 log). Written to the same
+# standard as the rest of this project and will need a real run to verify, once Docker
+# is available.
+#
+# The postgres password below is a local-dev-only default, not a real secret -- same
+# pattern as most OSS compose files. Override it (and CELERY_BROKER_URL etc.) via a
+# real .env for anything beyond a laptop.
+#
+# `data/processed/*.gpkg` are regenerated locally by earlier project scripts and are
+# gitignored (see .gitignore's "large / regenerable data" section) -- they exist on
+# this machine but won't exist in a fresh clone. The `api`/`worker` images COPY the
+# build context as-is, so they only see these files if they're present on disk at
+# build time, same as running the app natively.
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: devlocal_hnp
+      POSTGRES_DB: hyperlocal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:devlocal_hnp@db:5432/hyperlocal
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+
+  worker:
+    build: .
+    command: ["celery", "-A", "api.celery_app:celery_app", "worker", "--loglevel=info"]
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:devlocal_hnp@db:5432/hyperlocal
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+
+  # One-off data loader, not part of the normal `docker compose up`. Run once after
+  # the db is healthy: `docker compose run --rm loader`.
+  loader:
+    build: .
+    profiles: ["tools"]
+    command: ["python", "scripts/load_db.py"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:devlocal_hnp@db:5432/hyperlocal
+
+volumes:
+  postgres_data:
