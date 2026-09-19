@@ -10,7 +10,7 @@ See `ORCHESTRATION.md` for coordination rules. This board is the concise handoff
 
 | Task | Owner | Scope / current checkpoint |
 |---|---|---|
-| V2 - Hyperlocal Growth & Reliability OS | Codex | **In progress.** Preserve v1; build product events, Experiment Studio, simulated DuckDB harness, intervention comparison, decision workspace, and evidence-backed brief. Charter, event/experiment foundations, and simulated DuckDB harness are complete; next is the tested intervention comparator. |
+| V2 - Hyperlocal Growth & Reliability OS | Codex, then Claude | **In progress.** Charter, event/experiment foundations, simulated DuckDB harness, and the intervention comparator are done (Claude found and fixed one real bug in the comparator's scoring before committing). The evidence-first decision brief (the honest "AI copilot") is done and tested — no LLM call, composes only from already-computed numbers. Remaining: wire a Streamlit decision-workspace tab on real v1 city data, validate one real end-to-end case per city, polish the README/case study, then CV bullets from real output only. 105 tests passing. |
 
 ## In review
 
