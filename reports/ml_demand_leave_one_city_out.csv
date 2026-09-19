@@ -1,0 +1,4 @@
+held_out_city,n_train,n_test,model_rmse_log,baseline_rmse_log,model_r2_log,model_mae_count,baseline_mae_count
+bengaluru,2132,1191,0.3824,0.3921,0.0077,0.408,0.42
+hyderabad,2129,1194,0.3151,0.3235,0.0474,0.31,0.352
+pune,2385,938,0.2935,0.2986,-0.0198,0.271,0.323
