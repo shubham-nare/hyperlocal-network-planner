@@ -115,6 +115,32 @@ def test_decision_brief_missing_id_is_404(client):
     assert client.get("/decisions/999999").status_code == 404
 
 
+OLLAMA_UP = False
+try:
+    import httpx as _httpx
+    from planner.llm_narration import OLLAMA_HOST as _OLLAMA_HOST
+    OLLAMA_UP = _httpx.get(f"{_OLLAMA_HOST}/api/version", timeout=2).status_code == 200
+except Exception:
+    pass
+
+
+@pytest.mark.skipif(not OLLAMA_UP, reason="no local Ollama server reachable")
+def test_narrate_endpoint_never_returns_unverified_text_as_verified(client):
+    """The narration guardrail's own logic is fully tested (with fake, deterministic
+    clients) in tests/test_llm_narration.py -- this only checks the HTTP wiring against
+    the real local model: that the endpoint responds, and that whatever it reports as
+    verified/unverified matches the invariant the module promises."""
+    created = client.post("/decisions/brief", json=DECISION_BODY).json()
+    r = client.post(f"/decisions/{created['id']}/narrate")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["brief_id"] == created["id"]
+    assert body["text"]
+    if not body["verified"]:
+        assert body["used_fallback"] is True
+        assert body["text"] == created["markdown"]
+
+
 def test_calibration_matches_the_known_hyderabad_breakeven(client):
     r = client.get("/scenarios/calibration/hyderabad")
     assert r.status_code == 200

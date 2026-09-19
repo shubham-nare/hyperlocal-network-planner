@@ -38,6 +38,15 @@ class DecisionBriefOut(BaseModel):
     markdown: str
 
 
+class NarrationOut(BaseModel):
+    brief_id: int
+    text: str
+    verified: bool
+    unverified_numbers: tuple[float, ...]
+    critic_flags: tuple[str, ...]
+    used_fallback: bool
+
+
 class RentShockRequest(BaseModel):
     city: str
     rent_per_sqft_month: float = Field(gt=0)
