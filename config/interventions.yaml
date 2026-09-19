@@ -1,0 +1,6 @@
+# V2 intervention-comparison assumptions. These are scenario inputs, not observed product outcomes.
+zone_extension_capture_rate: 0.18       # share of currently unserved calibrated demand made eligible by a bounded extension
+capacity_addition_fraction: 0.20        # incremental capacity as a share of nearby current capacity
+assortment_conversion_lift: 0.04        # relative completed-order lift used only for an assortment pilot scenario
+eta_promise_breach_limit: 0.10          # guardrail: do not recommend a faster promise at or above this breach rate
+minimum_store_breakeven_cover: 1.0      # a new-store scenario must clear this multiple of break-even

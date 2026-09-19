@@ -1,14 +1,16 @@
 # Task board
 
-See `ORCHESTRATION.md` for how this works. Claude keeps this file current.
+See `ORCHESTRATION.md` for coordination rules. This board is the concise handoff view; detailed decisions, commands, and evidence live in `CONTEXT.md`.
 
 ## Backlog
 
-(nothing queued)
+(nothing queued outside the active v2 build)
 
 ## Assigned
 
-(none currently — both original assignments have resolved, see Done)
+| Task | Owner | Scope / current checkpoint |
+|---|---|---|
+| V2 - Hyperlocal Growth & Reliability OS | Codex | **In progress.** Preserve v1; build product events, Experiment Studio, simulated DuckDB harness, intervention comparison, decision workspace, and evidence-backed brief. Charter, event/experiment foundations, and simulated DuckDB harness are complete; next is the tested intervention comparator. |
 
 ## In review
 
@@ -18,12 +20,12 @@ See `ORCHESTRATION.md` for how this works. Claude keeps this file current.
 
 | Task | Agent | Outcome |
 |---|---|---|
-| 02 — Harden the Streamlit app + cloud-kitchen mode | Antigravity (interactive) | **Done.** Fixed the confirmed `load_city_data()` column-drop bug, hardened `adoption_index` with a clean `ValueError`, wrapped the scenario runner in try/except, added `app/__init__.py` + `pytest.ini` pythonpath so `app/` is testable, added 4 new tests, verified `cloud_kitchen.yaml` weights across all 3 cities, walked through every city/mode combination. Committed on `antigravity/work` (`8c7021b`); the substantive files were brought onto `main` directly (`e3b56fd`) rather than merged wholesale, since that branch forked before `ORCHESTRATION.md`/`TASKS.md`/`tasks/` existed and a blind merge would have shown them as "deleted" (branch-divergence artifact, not real deletions — verified before doing anything). 84 tests passing. |
-| 01 — Bengaluru & Pune scenarios + memos | Codex (`codex exec`) then Claude | **Done.** Codex completed all 5 Bengaluru scenarios + Bengaluru's memo + `scripts/build_city_comparison.py` before hitting "You've hit your usage limit... try again at Oct 13th, 2026" partway into Pune — did not fabricate anything, left real reviewable output. Claude finished the remaining Pune scenarios + `reports/expansion_memo_pune.md` + `reports/city_comparison.md` directly. **Codex is unusable for this project until Oct 13, 2026 (or an upgrade).** 84 tests passing.
+| 02 - Harden the Streamlit app + cloud-kitchen mode | Antigravity (interactive) | **Done.** Fixed `load_city_data()` feature-column loss, hardened `adoption_index`, added app tests, and verified every city/mode. Substantive files landed on `main` in `e3b56fd`; 84 tests passed. |
+| 01 - Bengaluru & Pune scenarios + memos | Codex then Claude | **Done.** Completed all replication scenarios, city memos, and the three-city comparison. Main results landed in `a8f4446` and `295fb7b`; 84 tests passed. |
 
-## Notes
+## Handoff notes
 
-- Baseline commit `9798e61` on `main` — 80 tests passing — is what both worktrees branched from.
-- `codex/work` and `antigravity/work` still exist with their own commit histories; they're not being
-  deleted, just not merged wholesale. Future tasks can keep reusing them.
-- Both `TASK_BRIEF.md` files remain in their worktrees for reference.
+- Baseline commit `9798e61` contains the finalized v1 engine. Keep v1's public-data evidence and validation intact while building v2.
+- `data/`, `.venv`, and `cache/` are shared, untracked junctioned state across worktrees. Do not regenerate `data/processed` casually.
+- V2's generated event data must always be labelled simulated; it is a harness for product analytics and experiment mechanics, not real customer data or impact evidence.
+- Record each meaningful v2 milestone, test command, data-source decision, and remaining next action in `CONTEXT.md` before switching workstreams.
