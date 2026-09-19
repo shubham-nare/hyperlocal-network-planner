@@ -1,0 +1,10 @@
+city,distance_decay,n_ground_truth_hexes,n_with_a_store_in_reach,n_true_store_in_reach,huff_argmax_accuracy,huff_log_loss_on_true_store,nearest_store_baseline_accuracy
+hyderabad,1.0,834,698,663,0.8496,0.2722,0.8465
+hyderabad,2.0,834,698,663,0.8496,0.2388,0.8465
+hyderabad,3.0,834,698,663,0.8496,0.2279,0.8465
+bengaluru,1.0,951,749,698,0.8398,0.2561,0.8118
+bengaluru,2.0,951,749,698,0.8398,0.2223,0.8118
+bengaluru,3.0,951,749,698,0.8398,0.2102,0.8118
+pune,1.0,500,386,361,0.8731,0.1519,0.876
+pune,2.0,500,386,361,0.8731,0.133,0.876
+pune,3.0,500,386,361,0.8731,0.1271,0.876
