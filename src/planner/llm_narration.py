@@ -148,12 +148,6 @@ class NarrationResult:
     used_fallback: bool
 
 
-def _check_numbers(narration: str, brief: DecisionBrief) -> tuple[float, ...]:
-    allowed = _brief_source_numbers(brief)
-    found = _numbers_in(narration)
-    return tuple(sorted(n for n in found if not any(abs(n - a) < 0.6 for a in allowed)))
-
-
 def _run_critic(facts: str, narration: str, model: str, client: LLMClient) -> tuple[str, ...]:
     try:
         response = client(_CRITIC_PROMPT.format(facts=facts, narrative=narration), model)
@@ -163,6 +157,35 @@ def _run_critic(facts: str, narration: str, model: str, client: LLMClient) -> tu
     if verdict.upper().startswith("PASS"):
         return ()
     return (verdict,)
+
+
+def generate_and_verify(
+    facts: str, allowed_numbers: set[float], fallback_text: str, *,
+    model: str = DEFAULT_MODEL, client: LLMClient = ollama_client, run_critic: bool = True,
+    narrator_prompt: str = _NARRATOR_PROMPT,
+) -> NarrationResult:
+    """The shared guardrail core: a Narrator turns ``facts`` into prose, a Critic checks
+    the prose against the same facts for unsupported claims, and every number in the
+    prose is checked against ``allowed_numbers``. Falls back to ``fallback_text`` --
+    never a half-verified narration -- if any check fails or a model call errors out.
+
+    This is deliberately generic (no DecisionBrief-specific fields) so any caller with
+    its own facts and its own deterministic fallback -- e.g. investigation.py's
+    multi-domain memo -- gets the same enforced guarantee `narrate()` gives a brief.
+    """
+    try:
+        narration = client(narrator_prompt.format(facts=facts), model)
+    except Exception:
+        return NarrationResult(fallback_text, verified=False, unverified_numbers=(), critic_flags=(), used_fallback=True)
+
+    found = _numbers_in(narration)
+    unverified = tuple(sorted(n for n in found if not any(abs(n - a) < 0.6 for a in allowed_numbers)))
+    critic_flags = _run_critic(facts, narration, model, client) if run_critic and not unverified else ()
+
+    if unverified or critic_flags:
+        return NarrationResult(fallback_text, verified=False, unverified_numbers=unverified,
+                               critic_flags=critic_flags, used_fallback=True)
+    return NarrationResult(narration.strip(), verified=True, unverified_numbers=(), critic_flags=(), used_fallback=False)
 
 
 def narrate(
@@ -175,16 +198,7 @@ def narrate(
     narration -- if the narrator's prose contains an untraceable number, the critic
     flags an unsupported claim, or the model call fails outright.
     """
-    facts = _facts_block(brief)
-    try:
-        narration = client(_NARRATOR_PROMPT.format(facts=facts), model)
-    except Exception:
-        return NarrationResult(brief.render_markdown(), verified=False, unverified_numbers=(), critic_flags=(), used_fallback=True)
-
-    unverified = _check_numbers(narration, brief)
-    critic_flags = _run_critic(facts, narration, model, client) if run_critic and not unverified else ()
-
-    if unverified or critic_flags:
-        return NarrationResult(brief.render_markdown(), verified=False, unverified_numbers=unverified,
-                               critic_flags=critic_flags, used_fallback=True)
-    return NarrationResult(narration.strip(), verified=True, unverified_numbers=(), critic_flags=(), used_fallback=False)
+    return generate_and_verify(
+        _facts_block(brief), _brief_source_numbers(brief), brief.render_markdown(),
+        model=model, client=client, run_critic=run_critic,
+    )

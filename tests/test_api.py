@@ -86,6 +86,10 @@ def test_unknown_scenario_tag_is_404(client):
     assert client.get("/cities/hyderabad/recommended-sites", params={"scenario_tag": "rent_shock_25pct"}).status_code == 404
 
 
+def test_investigate_unknown_site_is_404(client):
+    assert client.post("/sites/999999/investigate").status_code == 404
+
+
 DECISION_BODY = {
     "city": "hyderabad", "micro_market": "Amberpet", "latent_orders_per_day": 3000,
     "unserved_orders_per_day": 900, "served_share": 0.7, "nearby_capacity_utilisation": 0.85,
@@ -139,6 +143,22 @@ def test_narrate_endpoint_never_returns_unverified_text_as_verified(client):
     if not body["verified"]:
         assert body["used_fallback"] is True
         assert body["text"] == created["markdown"]
+
+
+@pytest.mark.skipif(not OLLAMA_UP, reason="no local Ollama server reachable")
+def test_investigate_endpoint_never_returns_unverified_memo_as_verified(client):
+    """As above: the guardrail logic itself is tested in tests/test_investigation.py;
+    this only checks the HTTP wiring, using the real recommended site the `client`
+    fixture seeds (Amberpet, id 1 after the table truncate/reset)."""
+    r = client.post("/sites/1/investigate")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["locality"] == "Amberpet"
+    assert body["spatial"]["site_orders_per_day"] == 2094.0
+    assert body["memo"]["text"]
+    if not body["memo"]["verified"]:
+        assert body["memo"]["used_fallback"] is True
+        assert "Amberpet" in body["memo"]["text"]
 
 
 def test_calibration_matches_the_known_hyderabad_breakeven(client):

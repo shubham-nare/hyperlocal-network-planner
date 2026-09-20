@@ -63,7 +63,7 @@ def get_recommended_sites(city: str, scenario_tag: str = "base",
     if not rows:
         raise HTTPException(404, f"no recommended sites loaded for city={city!r} scenario_tag={scenario_tag!r}")
     return [
-        {"rank": r.rank, "h3": r.h3, "lat": r.lat, "lng": r.lng, "locality": r.locality, "pincode": r.pincode,
+        {"id": r.id, "rank": r.rank, "h3": r.h3, "lat": r.lat, "lng": r.lng, "locality": r.locality, "pincode": r.pincode,
          "demand_index": r.demand_index, "site_orders_per_day": r.site_orders_per_day,
          "incremental_orders_per_day": r.incremental_orders_per_day, "new_coverage_orders": r.new_coverage_orders,
          "capacity_relief_orders": r.capacity_relief_orders, "breakeven_cover": r.breakeven_cover,

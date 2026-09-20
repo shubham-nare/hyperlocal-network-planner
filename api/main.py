@@ -8,7 +8,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import cities, decisions, scenarios
+from api.routers import cities, decisions, investigation, scenarios
 
 app = FastAPI(title="Hyperlocal Network Planner API", version="0.1.0")
 app.add_middleware(
@@ -20,6 +20,7 @@ app.add_middleware(
 app.include_router(cities.router)
 app.include_router(decisions.router)
 app.include_router(scenarios.router)
+app.include_router(investigation.router)
 
 
 @app.get("/health")
