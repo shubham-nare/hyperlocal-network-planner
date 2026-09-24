@@ -44,6 +44,22 @@ co-location carry the signal. Write-up, per-brand strategy differences and a whi
 rebuilt from Overture Maps + Meta HRSL, so its numbers are not directly comparable to the table
 above.)*
 
+## Follow-up: a rollout plan that learns
+
+v1 outputs a ranked list and implicitly opens it all at once. `src/planner/rollout.py` plans the
+way expansion teams actually work: commit now only to stores that pay back across plausible
+demand maps, let those stores *measure* demand for 8 weeks, update the map (Bayesian, spatially
+correlated), then decide the rest. Each deferred zone gets a trigger ("open unless the nearby
+wave-1 store reads below X orders/day"). The objective is rupees: incremental orders × margin −
+fixed cost − capex, using the Week 3 unit-economics scenarios.
+
+In a paired simulation against demand maps that are off by ×/÷1.3 to ×/÷2.1 locally, staging adds
+**₹20–30 Cr over 3 years** to v1's plan in Hyderabad and Pune, and cuts the share of cities where
+the rollout loses money from 10–31% to 0–11%. Deferring without using the data adds nothing: the
+value is the information. In Bengaluru the 40-store budget runs out before any site is uncertain,
+so the planner opens everything now. Write-up and plans: [`reports/rollout_plan.md`](reports/rollout_plan.md).
+*(Simulated against a stated error model; not a forecast.)*
+
 ## What it looks like
 
 <img src="reports/network_hyderabad_base.png" width="420" alt="Hyderabad recommended sites map"> <img src="reports/unit_economics_breakeven.png" width="420" alt="Store break-even chart">

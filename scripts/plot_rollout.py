@@ -32,7 +32,7 @@ def main() -> None:
             ax.bar(x, rows["gain_vs_v1_cr"], width=width - 0.03, color=colour, label=label, edgecolor=SURFACE, linewidth=2)
             ax.errorbar(x, rows["gain_vs_v1_cr"], yerr=err, fmt="none", ecolor=INK_2, elinewidth=1, capsize=2)
         ax.axhline(0, color=INK_2, linewidth=1)
-        ax.set_xticks(range(len(sigmas)), [f"±{int(round((np.exp(v) - 1) * 100))}%\n(σ={v})" for v in sigmas])
+        ax.set_xticks(range(len(sigmas)), [f"×/÷ {np.exp(v):.1f}\n(σ={v})" for v in sigmas])
         ax.set_title(city.title(), loc="left", fontsize=11, color=INK)
         ax.set_facecolor(SURFACE)
         ax.grid(axis="y", color=GRID, linewidth=0.8)
