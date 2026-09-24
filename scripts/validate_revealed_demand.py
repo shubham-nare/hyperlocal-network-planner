@@ -29,6 +29,7 @@ import pandas as pd
 import yaml
 
 from planner.demand import demand_index
+from planner.open_data import label_places
 from planner.reach import ride_budget_m
 from planner.revealed_demand import (
     LADDER, CityData, build_city_data, fit, greedy_place, haversine_km, random_recall,
@@ -67,26 +68,6 @@ def index_demand(data: CityData, weights: dict[str, float]) -> np.ndarray:
     """The v1 hand-weighted percentile demand index (config/demand.yaml), computed on these features."""
     raw = data.raw[[c for c in weights if c in data.raw.columns]].copy()
     return demand_index(raw, {k: v for k, v in weights.items() if k in raw.columns})["demand_index"].to_numpy()
-
-
-def label_places(frame: pd.DataFrame, city: str, source: str) -> pd.DataFrame:
-    """Nearest named Overture neighbourhood (within 2 km), else nearest locality -- readability only."""
-    try:
-        places = pd.read_parquet(f"data/processed/{city}_neighbourhoods.parquet")
-    except FileNotFoundError:
-        return frame.assign(place="")
-    # a few Overture "neighborhood" records are really business listings ("X - Interior Designer in Y")
-    places = places[~places["name"].str.contains(r" - | in (?:Hyderabad|Bengaluru|Bangalore|Pune)\b", regex=True)]
-    fine = places[places["subtype"] != "locality"]
-    names = []
-    for lat, lng in zip(frame["lat"], frame["lng"]):
-        d = haversine_km(lat, lng, fine["lat"].to_numpy(), fine["lng"].to_numpy())
-        if len(d) and d.min() <= 2.0:
-            names.append(fine["name"].iloc[int(d.argmin())])
-        else:
-            d = haversine_km(lat, lng, places["lat"].to_numpy(), places["lng"].to_numpy())
-            names.append(places["name"].iloc[int(d.argmin())] if len(d) else "")
-    return frame.assign(place=names)
 
 
 def lgb_scores(datasets: dict[str, CityData], train: dict[str, tuple[str, ...]], target: CityData) -> np.ndarray:

@@ -17,6 +17,7 @@ The functions below are pure (no network) so they are unit-tested; the S3 reads 
 from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
+from pathlib import Path
 
 import h3
 import numpy as np
@@ -93,3 +94,26 @@ def buffer_cells(cells: Iterable[str], rings: int) -> set[str]:
     for c in cells:
         out.update(h3.grid_disk(c, rings))
     return out
+
+
+def label_places(frame: pd.DataFrame, city: str, source: str = "open", processed_dir: str | Path = "data/processed") -> pd.DataFrame:
+    """Add a ``place`` column: nearest named Overture neighbourhood within 2 km, else nearest
+    locality. Readability only; empty names if build_open_features.py hasn't written the file."""
+    from planner.revealed_demand import haversine_km  # local import: revealed_demand doesn't need this module
+
+    try:
+        places = pd.read_parquet(Path(processed_dir) / f"{city}_neighbourhoods.parquet")
+    except FileNotFoundError:
+        return frame.assign(place="")
+    # a few Overture "neighborhood" records are really business listings ("X - Interior Designer in Y")
+    places = places[~places["name"].str.contains(r" - | in (?:Hyderabad|Bengaluru|Bangalore|Pune)\b", regex=True)]
+    fine = places[places["subtype"] != "locality"]
+    names = []
+    for lat, lng in zip(frame["lat"], frame["lng"]):
+        d = haversine_km(lat, lng, fine["lat"].to_numpy(), fine["lng"].to_numpy())
+        if len(d) and d.min() <= 2.0:
+            names.append(fine["name"].iloc[int(d.argmin())])
+        else:
+            d = haversine_km(lat, lng, places["lat"].to_numpy(), places["lng"].to_numpy())
+            names.append(places["name"].iloc[int(d.argmin())] if len(d) else "")
+    return frame.assign(place=names)
