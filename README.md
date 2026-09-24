@@ -30,6 +30,20 @@ estimates, not disclosed company figures — see Methodology.)*
 
 Full per-city write-ups with named localities: [`reports/expansion_memo_hyderabad.md`](reports/expansion_memo_hyderabad.md) · [`reports/expansion_memo_bengaluru.md`](reports/expansion_memo_bengaluru.md) · [`reports/expansion_memo_pune.md`](reports/expansion_memo_pune.md) · [`reports/city_comparison.md`](reports/city_comparison.md)
 
+## Follow-up: what real store networks reveal
+
+The three operators site stores using order data nobody outside can see, so their networks are
+evidence about that demand. A spatial entry model (`src/planner/revealed_demand.py`) asks where
+a brand is likely to put a store, given its own spacing and where competitors already are.
+Hiding a brand *and* a city from fitting and re-placing the brand's network, it lands on the
+exact real store hex **2.4× as often as the v1 demand index** (27.1% vs 11.5%, better in 9 of
+9 held-out networks). The honest twist: public demand features add nothing once competitors'
+locations are known. Spacing, which the earlier hex-by-hex ML model missed, and competitor
+co-location carry the signal. Write-up, per-brand strategy differences and a whitespace list:
+[`reports/revealed_demand.md`](reports/revealed_demand.md). *(Features for this study were
+rebuilt from Overture Maps + Meta HRSL, so its numbers are not directly comparable to the table
+above.)*
+
 ## What it looks like
 
 <img src="reports/network_hyderabad_base.png" width="420" alt="Hyderabad recommended sites map"> <img src="reports/unit_economics_breakeven.png" width="420" alt="Store break-even chart">

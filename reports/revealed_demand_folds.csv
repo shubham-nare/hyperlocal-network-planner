@@ -1,0 +1,244 @@
+protocol,city,brand,method,k,recall_0.5km,recall_1.0km,recall_1.5km
+leave_one_brand_out,hyderabad,Blinkit,demand_index_max_coverage,87,0.08045977011494253,0.6781609195402298,0.6781609195402298
+leave_one_brand_out,hyderabad,Blinkit,lightgbm_top_k,87,0.21839080459770116,0.5747126436781609,0.5747126436781609
+leave_one_brand_out,hyderabad,Blinkit,own_hex_logit_top_k,87,0.2413793103448276,0.5057471264367817,0.5057471264367817
+leave_one_brand_out,hyderabad,Blinkit,competitor_max_coverage,87,0.05747126436781609,0.6091954022988506,0.6091954022988506
+leave_one_brand_out,hyderabad,Blinkit,catchment_greedy,87,0.1839080459770115,0.3103448275862069,0.3103448275862069
+leave_one_brand_out,hyderabad,Blinkit,catchment+spacing_greedy,87,0.14942528735632185,0.7126436781609196,0.7126436781609196
+leave_one_brand_out,hyderabad,Blinkit,spacing+competition_no_features_greedy,87,0.20689655172413793,0.6666666666666666,0.6666666666666666
+leave_one_brand_out,hyderabad,Blinkit,structural_greedy,87,0.16091954022988506,0.7241379310344828,0.7241379310344828
+leave_one_brand_out,hyderabad,Blinkit,random,87,0.07798850574712643,0.4246551724137932,0.4246551724137932
+leave_one_brand_out,bengaluru,Blinkit,demand_index_max_coverage,134,0.13432835820895522,0.8432835820895522,0.8432835820895522
+leave_one_brand_out,bengaluru,Blinkit,lightgbm_top_k,134,0.3358208955223881,0.7910447761194029,0.7910447761194029
+leave_one_brand_out,bengaluru,Blinkit,own_hex_logit_top_k,134,0.2835820895522388,0.5895522388059702,0.5895522388059702
+leave_one_brand_out,bengaluru,Blinkit,competitor_max_coverage,134,0.1865671641791045,0.8880597014925373,0.8880597014925373
+leave_one_brand_out,bengaluru,Blinkit,catchment_greedy,134,0.26119402985074625,0.44029850746268656,0.44029850746268656
+leave_one_brand_out,bengaluru,Blinkit,catchment+spacing_greedy,134,0.1791044776119403,0.8507462686567164,0.8507462686567164
+leave_one_brand_out,bengaluru,Blinkit,spacing+competition_no_features_greedy,134,0.31343283582089554,0.835820895522388,0.835820895522388
+leave_one_brand_out,bengaluru,Blinkit,structural_greedy,134,0.21641791044776118,0.8507462686567164,0.8507462686567164
+leave_one_brand_out,bengaluru,Blinkit,random,134,0.09578358208955225,0.49615671641791037,0.49615671641791037
+leave_one_brand_out,pune,Blinkit,demand_index_max_coverage,67,0.014925373134328358,0.6119402985074627,0.7313432835820896
+leave_one_brand_out,pune,Blinkit,lightgbm_top_k,67,0.3582089552238806,0.5970149253731343,0.6417910447761194
+leave_one_brand_out,pune,Blinkit,own_hex_logit_top_k,67,0.22388059701492538,0.47761194029850745,0.582089552238806
+leave_one_brand_out,pune,Blinkit,competitor_max_coverage,67,0.05970149253731343,0.7313432835820896,0.8208955223880597
+leave_one_brand_out,pune,Blinkit,catchment_greedy,67,0.16417910447761194,0.22388059701492538,0.2537313432835821
+leave_one_brand_out,pune,Blinkit,catchment+spacing_greedy,67,0.08955223880597014,0.6716417910447762,0.7761194029850746
+leave_one_brand_out,pune,Blinkit,spacing+competition_no_features_greedy,67,0.3283582089552239,0.7611940298507462,0.7761194029850746
+leave_one_brand_out,pune,Blinkit,structural_greedy,67,0.29850746268656714,0.746268656716418,0.7761194029850746
+leave_one_brand_out,pune,Blinkit,random,67,0.0903731343283582,0.4636567164179104,0.5444776119402985
+leave_one_brand_out,hyderabad,Zepto,demand_index_max_coverage,102,0.10784313725490197,0.7254901960784313,0.7254901960784313
+leave_one_brand_out,hyderabad,Zepto,lightgbm_top_k,102,0.28431372549019607,0.7254901960784313,0.7254901960784313
+leave_one_brand_out,hyderabad,Zepto,own_hex_logit_top_k,102,0.22549019607843138,0.5294117647058824,0.5294117647058824
+leave_one_brand_out,hyderabad,Zepto,competitor_max_coverage,102,0.1568627450980392,0.8235294117647058,0.8235294117647058
+leave_one_brand_out,hyderabad,Zepto,catchment_greedy,102,0.14705882352941177,0.37254901960784315,0.37254901960784315
+leave_one_brand_out,hyderabad,Zepto,catchment+spacing_greedy,102,0.13725490196078433,0.803921568627451,0.803921568627451
+leave_one_brand_out,hyderabad,Zepto,spacing+competition_no_features_greedy,102,0.21568627450980393,0.7352941176470589,0.7352941176470589
+leave_one_brand_out,hyderabad,Zepto,structural_greedy,102,0.21568627450980393,0.7647058823529411,0.7647058823529411
+leave_one_brand_out,hyderabad,Zepto,random,102,0.09019607843137255,0.4778431372549019,0.4778431372549019
+leave_one_brand_out,bengaluru,Zepto,demand_index_max_coverage,138,0.15942028985507245,0.8115942028985508,0.8115942028985508
+leave_one_brand_out,bengaluru,Zepto,lightgbm_top_k,138,0.3188405797101449,0.7463768115942029,0.7463768115942029
+leave_one_brand_out,bengaluru,Zepto,own_hex_logit_top_k,138,0.2608695652173913,0.5942028985507246,0.5942028985507246
+leave_one_brand_out,bengaluru,Zepto,competitor_max_coverage,138,0.11594202898550725,0.9057971014492754,0.9057971014492754
+leave_one_brand_out,bengaluru,Zepto,catchment_greedy,138,0.2608695652173913,0.42028985507246375,0.42028985507246375
+leave_one_brand_out,bengaluru,Zepto,catchment+spacing_greedy,138,0.2028985507246377,0.855072463768116,0.855072463768116
+leave_one_brand_out,bengaluru,Zepto,spacing+competition_no_features_greedy,138,0.32608695652173914,0.8115942028985508,0.8115942028985508
+leave_one_brand_out,bengaluru,Zepto,structural_greedy,138,0.2898550724637681,0.8478260869565217,0.8478260869565217
+leave_one_brand_out,bengaluru,Zepto,random,138,0.09583333333333335,0.5042753623188406,0.5042753623188406
+leave_one_brand_out,pune,Zepto,demand_index_max_coverage,43,0.09302325581395349,0.5116279069767442,0.5813953488372093
+leave_one_brand_out,pune,Zepto,lightgbm_top_k,43,0.2558139534883721,0.627906976744186,0.627906976744186
+leave_one_brand_out,pune,Zepto,own_hex_logit_top_k,43,0.09302325581395349,0.3023255813953488,0.32558139534883723
+leave_one_brand_out,pune,Zepto,competitor_max_coverage,43,0.046511627906976744,0.5581395348837209,0.6744186046511628
+leave_one_brand_out,pune,Zepto,catchment_greedy,43,0.06976744186046512,0.13953488372093023,0.13953488372093023
+leave_one_brand_out,pune,Zepto,catchment+spacing_greedy,43,0.06976744186046512,0.5348837209302325,0.6046511627906976
+leave_one_brand_out,pune,Zepto,spacing+competition_no_features_greedy,43,0.23255813953488372,0.7441860465116279,0.7674418604651163
+leave_one_brand_out,pune,Zepto,structural_greedy,43,0.18604651162790697,0.6046511627906976,0.6046511627906976
+leave_one_brand_out,pune,Zepto,random,43,0.05976744186046511,0.3233720930232558,0.3883720930232558
+leave_one_brand_out,hyderabad,Swiggy Instamart,demand_index_max_coverage,75,0.16,0.56,0.56
+leave_one_brand_out,hyderabad,Swiggy Instamart,lightgbm_top_k,75,0.24,0.56,0.56
+leave_one_brand_out,hyderabad,Swiggy Instamart,own_hex_logit_top_k,75,0.24,0.5066666666666667,0.5066666666666667
+leave_one_brand_out,hyderabad,Swiggy Instamart,competitor_max_coverage,75,0.13333333333333333,0.6666666666666666,0.6666666666666666
+leave_one_brand_out,hyderabad,Swiggy Instamart,catchment_greedy,75,0.16,0.29333333333333333,0.29333333333333333
+leave_one_brand_out,hyderabad,Swiggy Instamart,catchment+spacing_greedy,75,0.12,0.68,0.68
+leave_one_brand_out,hyderabad,Swiggy Instamart,spacing+competition_no_features_greedy,75,0.22666666666666666,0.7333333333333333,0.7333333333333333
+leave_one_brand_out,hyderabad,Swiggy Instamart,structural_greedy,75,0.18666666666666668,0.7066666666666667,0.7066666666666667
+leave_one_brand_out,hyderabad,Swiggy Instamart,random,75,0.0666,0.37933333333333336,0.37933333333333336
+leave_one_brand_out,bengaluru,Swiggy Instamart,demand_index_max_coverage,99,0.13131313131313133,0.6868686868686869,0.6868686868686869
+leave_one_brand_out,bengaluru,Swiggy Instamart,lightgbm_top_k,99,0.2727272727272727,0.6060606060606061,0.6060606060606061
+leave_one_brand_out,bengaluru,Swiggy Instamart,own_hex_logit_top_k,99,0.25252525252525254,0.48484848484848486,0.48484848484848486
+leave_one_brand_out,bengaluru,Swiggy Instamart,competitor_max_coverage,99,0.1414141414141414,0.8888888888888888,0.8888888888888888
+leave_one_brand_out,bengaluru,Swiggy Instamart,catchment_greedy,99,0.2222222222222222,0.3838383838383838,0.3838383838383838
+leave_one_brand_out,bengaluru,Swiggy Instamart,catchment+spacing_greedy,99,0.23232323232323232,0.7272727272727273,0.7272727272727273
+leave_one_brand_out,bengaluru,Swiggy Instamart,spacing+competition_no_features_greedy,99,0.2727272727272727,0.7272727272727273,0.7272727272727273
+leave_one_brand_out,bengaluru,Swiggy Instamart,structural_greedy,99,0.23232323232323232,0.7171717171717171,0.7171717171717171
+leave_one_brand_out,bengaluru,Swiggy Instamart,random,99,0.07,0.3923737373737374,0.3923737373737374
+leave_one_brand_out,pune,Swiggy Instamart,demand_index_max_coverage,37,0.05405405405405406,0.4594594594594595,0.5405405405405406
+leave_one_brand_out,pune,Swiggy Instamart,lightgbm_top_k,37,0.32432432432432434,0.4864864864864865,0.5945945945945946
+leave_one_brand_out,pune,Swiggy Instamart,own_hex_logit_top_k,37,0.10810810810810811,0.1891891891891892,0.2972972972972973
+leave_one_brand_out,pune,Swiggy Instamart,competitor_max_coverage,37,0.08108108108108109,0.4864864864864865,0.5675675675675675
+leave_one_brand_out,pune,Swiggy Instamart,catchment_greedy,37,0.10810810810810811,0.16216216216216217,0.16216216216216217
+leave_one_brand_out,pune,Swiggy Instamart,catchment+spacing_greedy,37,0.08108108108108109,0.5945945945945946,0.6486486486486487
+leave_one_brand_out,pune,Swiggy Instamart,spacing+competition_no_features_greedy,37,0.16216216216216217,0.5675675675675675,0.6756756756756757
+leave_one_brand_out,pune,Swiggy Instamart,structural_greedy,37,0.1891891891891892,0.5945945945945946,0.6756756756756757
+leave_one_brand_out,pune,Swiggy Instamart,random,37,0.05364864864864865,0.2932432432432433,0.3566216216216217
+leave_one_city_out,hyderabad,Blinkit,demand_index_max_coverage,87,0.08045977011494253,0.6781609195402298,0.6781609195402298
+leave_one_city_out,hyderabad,Blinkit,lightgbm_top_k,87,0.13793103448275862,0.45977011494252873,0.45977011494252873
+leave_one_city_out,hyderabad,Blinkit,own_hex_logit_top_k,87,0.2413793103448276,0.4942528735632184,0.4942528735632184
+leave_one_city_out,hyderabad,Blinkit,competitor_max_coverage,87,0.05747126436781609,0.6091954022988506,0.6091954022988506
+leave_one_city_out,hyderabad,Blinkit,catchment_greedy,87,0.16091954022988506,0.2988505747126437,0.2988505747126437
+leave_one_city_out,hyderabad,Blinkit,catchment+spacing_greedy,87,0.10344827586206896,0.7586206896551724,0.7586206896551724
+leave_one_city_out,hyderabad,Blinkit,spacing+competition_no_features_greedy,87,0.1724137931034483,0.7126436781609196,0.7126436781609196
+leave_one_city_out,hyderabad,Blinkit,structural_greedy,87,0.13793103448275862,0.7126436781609196,0.7126436781609196
+leave_one_city_out,hyderabad,Blinkit,random,87,0.07798850574712643,0.4246551724137932,0.4246551724137932
+leave_one_city_out,hyderabad,Zepto,demand_index_max_coverage,102,0.10784313725490197,0.7254901960784313,0.7254901960784313
+leave_one_city_out,hyderabad,Zepto,lightgbm_top_k,102,0.16666666666666666,0.6470588235294118,0.6470588235294118
+leave_one_city_out,hyderabad,Zepto,own_hex_logit_top_k,102,0.24509803921568626,0.5490196078431373,0.5490196078431373
+leave_one_city_out,hyderabad,Zepto,competitor_max_coverage,102,0.1568627450980392,0.8235294117647058,0.8235294117647058
+leave_one_city_out,hyderabad,Zepto,catchment_greedy,102,0.17647058823529413,0.3333333333333333,0.3333333333333333
+leave_one_city_out,hyderabad,Zepto,catchment+spacing_greedy,102,0.0784313725490196,0.7843137254901961,0.7843137254901961
+leave_one_city_out,hyderabad,Zepto,spacing+competition_no_features_greedy,102,0.23529411764705882,0.7549019607843137,0.7549019607843137
+leave_one_city_out,hyderabad,Zepto,structural_greedy,102,0.21568627450980393,0.7843137254901961,0.7843137254901961
+leave_one_city_out,hyderabad,Zepto,random,102,0.09019607843137255,0.4778431372549019,0.4778431372549019
+leave_one_city_out,hyderabad,Swiggy Instamart,demand_index_max_coverage,75,0.16,0.56,0.56
+leave_one_city_out,hyderabad,Swiggy Instamart,lightgbm_top_k,75,0.16,0.48,0.48
+leave_one_city_out,hyderabad,Swiggy Instamart,own_hex_logit_top_k,75,0.22666666666666666,0.5333333333333333,0.5333333333333333
+leave_one_city_out,hyderabad,Swiggy Instamart,competitor_max_coverage,75,0.13333333333333333,0.6666666666666666,0.6666666666666666
+leave_one_city_out,hyderabad,Swiggy Instamart,catchment_greedy,75,0.14666666666666667,0.26666666666666666,0.26666666666666666
+leave_one_city_out,hyderabad,Swiggy Instamart,catchment+spacing_greedy,75,0.13333333333333333,0.6933333333333334,0.6933333333333334
+leave_one_city_out,hyderabad,Swiggy Instamart,spacing+competition_no_features_greedy,75,0.21333333333333335,0.7866666666666666,0.7866666666666666
+leave_one_city_out,hyderabad,Swiggy Instamart,structural_greedy,75,0.16,0.6933333333333334,0.6933333333333334
+leave_one_city_out,hyderabad,Swiggy Instamart,random,75,0.0666,0.37933333333333336,0.37933333333333336
+leave_brand_and_city_out,hyderabad,Blinkit,demand_index_max_coverage,87,0.08045977011494253,0.6781609195402298,0.6781609195402298
+leave_brand_and_city_out,hyderabad,Blinkit,lightgbm_top_k,87,0.16091954022988506,0.4942528735632184,0.4942528735632184
+leave_brand_and_city_out,hyderabad,Blinkit,own_hex_logit_top_k,87,0.22988505747126436,0.5057471264367817,0.5057471264367817
+leave_brand_and_city_out,hyderabad,Blinkit,competitor_max_coverage,87,0.05747126436781609,0.6091954022988506,0.6091954022988506
+leave_brand_and_city_out,hyderabad,Blinkit,catchment_greedy,87,0.14942528735632185,0.3218390804597701,0.3218390804597701
+leave_brand_and_city_out,hyderabad,Blinkit,catchment+spacing_greedy,87,0.09195402298850575,0.6896551724137931,0.6896551724137931
+leave_brand_and_city_out,hyderabad,Blinkit,spacing+competition_no_features_greedy,87,0.20689655172413793,0.6781609195402298,0.6781609195402298
+leave_brand_and_city_out,hyderabad,Blinkit,structural_greedy,87,0.1724137931034483,0.7126436781609196,0.7126436781609196
+leave_brand_and_city_out,hyderabad,Blinkit,random,87,0.07798850574712643,0.4246551724137932,0.4246551724137932
+leave_brand_and_city_out,hyderabad,Zepto,demand_index_max_coverage,102,0.10784313725490197,0.7254901960784313,0.7254901960784313
+leave_brand_and_city_out,hyderabad,Zepto,lightgbm_top_k,102,0.22549019607843138,0.6078431372549019,0.6078431372549019
+leave_brand_and_city_out,hyderabad,Zepto,own_hex_logit_top_k,102,0.2549019607843137,0.5490196078431373,0.5490196078431373
+leave_brand_and_city_out,hyderabad,Zepto,competitor_max_coverage,102,0.1568627450980392,0.8235294117647058,0.8235294117647058
+leave_brand_and_city_out,hyderabad,Zepto,catchment_greedy,102,0.17647058823529413,0.3431372549019608,0.3431372549019608
+leave_brand_and_city_out,hyderabad,Zepto,catchment+spacing_greedy,102,0.11764705882352941,0.7549019607843137,0.7549019607843137
+leave_brand_and_city_out,hyderabad,Zepto,spacing+competition_no_features_greedy,102,0.22549019607843138,0.7352941176470589,0.7352941176470589
+leave_brand_and_city_out,hyderabad,Zepto,structural_greedy,102,0.21568627450980393,0.7843137254901961,0.7843137254901961
+leave_brand_and_city_out,hyderabad,Zepto,random,102,0.09019607843137255,0.4778431372549019,0.4778431372549019
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,demand_index_max_coverage,75,0.16,0.56,0.56
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,lightgbm_top_k,75,0.18666666666666668,0.49333333333333335,0.49333333333333335
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,own_hex_logit_top_k,75,0.24,0.52,0.52
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,competitor_max_coverage,75,0.13333333333333333,0.6666666666666666,0.6666666666666666
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,catchment_greedy,75,0.13333333333333333,0.26666666666666666,0.26666666666666666
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,catchment+spacing_greedy,75,0.14666666666666667,0.6533333333333333,0.6533333333333333
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,spacing+competition_no_features_greedy,75,0.22666666666666666,0.76,0.76
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,structural_greedy,75,0.17333333333333334,0.7333333333333333,0.7333333333333333
+leave_brand_and_city_out,hyderabad,Swiggy Instamart,random,75,0.0666,0.37933333333333336,0.37933333333333336
+leave_one_city_out,bengaluru,Blinkit,demand_index_max_coverage,134,0.13432835820895522,0.8432835820895522,0.8432835820895522
+leave_one_city_out,bengaluru,Blinkit,lightgbm_top_k,134,0.15671641791044777,0.5373134328358209,0.5373134328358209
+leave_one_city_out,bengaluru,Blinkit,own_hex_logit_top_k,134,0.29850746268656714,0.6417910447761194,0.6417910447761194
+leave_one_city_out,bengaluru,Blinkit,competitor_max_coverage,134,0.1865671641791045,0.8880597014925373,0.8880597014925373
+leave_one_city_out,bengaluru,Blinkit,catchment_greedy,134,0.2462686567164179,0.4552238805970149,0.4552238805970149
+leave_one_city_out,bengaluru,Blinkit,catchment+spacing_greedy,134,0.22388059701492538,0.8208955223880597,0.8208955223880597
+leave_one_city_out,bengaluru,Blinkit,spacing+competition_no_features_greedy,134,0.3208955223880597,0.8507462686567164,0.8507462686567164
+leave_one_city_out,bengaluru,Blinkit,structural_greedy,134,0.2835820895522388,0.8955223880597015,0.8955223880597015
+leave_one_city_out,bengaluru,Blinkit,random,134,0.09578358208955225,0.49615671641791037,0.49615671641791037
+leave_one_city_out,bengaluru,Zepto,demand_index_max_coverage,138,0.15942028985507245,0.8115942028985508,0.8115942028985508
+leave_one_city_out,bengaluru,Zepto,lightgbm_top_k,138,0.21014492753623187,0.5434782608695652,0.5434782608695652
+leave_one_city_out,bengaluru,Zepto,own_hex_logit_top_k,138,0.1956521739130435,0.572463768115942,0.572463768115942
+leave_one_city_out,bengaluru,Zepto,competitor_max_coverage,138,0.11594202898550725,0.9057971014492754,0.9057971014492754
+leave_one_city_out,bengaluru,Zepto,catchment_greedy,138,0.2753623188405797,0.42028985507246375,0.42028985507246375
+leave_one_city_out,bengaluru,Zepto,catchment+spacing_greedy,138,0.21014492753623187,0.8405797101449275,0.8405797101449275
+leave_one_city_out,bengaluru,Zepto,spacing+competition_no_features_greedy,138,0.30434782608695654,0.8695652173913043,0.8695652173913043
+leave_one_city_out,bengaluru,Zepto,structural_greedy,138,0.3188405797101449,0.855072463768116,0.855072463768116
+leave_one_city_out,bengaluru,Zepto,random,138,0.09583333333333335,0.5042753623188406,0.5042753623188406
+leave_one_city_out,bengaluru,Swiggy Instamart,demand_index_max_coverage,99,0.13131313131313133,0.6868686868686869,0.6868686868686869
+leave_one_city_out,bengaluru,Swiggy Instamart,lightgbm_top_k,99,0.16161616161616163,0.46464646464646464,0.46464646464646464
+leave_one_city_out,bengaluru,Swiggy Instamart,own_hex_logit_top_k,99,0.21212121212121213,0.46464646464646464,0.46464646464646464
+leave_one_city_out,bengaluru,Swiggy Instamart,competitor_max_coverage,99,0.1414141414141414,0.8888888888888888,0.8888888888888888
+leave_one_city_out,bengaluru,Swiggy Instamart,catchment_greedy,99,0.23232323232323232,0.41414141414141414,0.41414141414141414
+leave_one_city_out,bengaluru,Swiggy Instamart,catchment+spacing_greedy,99,0.1919191919191919,0.6767676767676768,0.6767676767676768
+leave_one_city_out,bengaluru,Swiggy Instamart,spacing+competition_no_features_greedy,99,0.24242424242424243,0.7575757575757576,0.7575757575757576
+leave_one_city_out,bengaluru,Swiggy Instamart,structural_greedy,99,0.29292929292929293,0.7272727272727273,0.7272727272727273
+leave_one_city_out,bengaluru,Swiggy Instamart,random,99,0.07,0.3923737373737374,0.3923737373737374
+leave_brand_and_city_out,bengaluru,Blinkit,demand_index_max_coverage,134,0.13432835820895522,0.8432835820895522,0.8432835820895522
+leave_brand_and_city_out,bengaluru,Blinkit,lightgbm_top_k,134,0.23880597014925373,0.5970149253731343,0.5970149253731343
+leave_brand_and_city_out,bengaluru,Blinkit,own_hex_logit_top_k,134,0.291044776119403,0.6417910447761194,0.6417910447761194
+leave_brand_and_city_out,bengaluru,Blinkit,competitor_max_coverage,134,0.1865671641791045,0.8880597014925373,0.8880597014925373
+leave_brand_and_city_out,bengaluru,Blinkit,catchment_greedy,134,0.2537313432835821,0.44029850746268656,0.44029850746268656
+leave_brand_and_city_out,bengaluru,Blinkit,catchment+spacing_greedy,134,0.21641791044776118,0.835820895522388,0.835820895522388
+leave_brand_and_city_out,bengaluru,Blinkit,spacing+competition_no_features_greedy,134,0.3358208955223881,0.835820895522388,0.835820895522388
+leave_brand_and_city_out,bengaluru,Blinkit,structural_greedy,134,0.291044776119403,0.8656716417910447,0.8656716417910447
+leave_brand_and_city_out,bengaluru,Blinkit,random,134,0.09578358208955225,0.49615671641791037,0.49615671641791037
+leave_brand_and_city_out,bengaluru,Zepto,demand_index_max_coverage,138,0.15942028985507245,0.8115942028985508,0.8115942028985508
+leave_brand_and_city_out,bengaluru,Zepto,lightgbm_top_k,138,0.16666666666666666,0.572463768115942,0.572463768115942
+leave_brand_and_city_out,bengaluru,Zepto,own_hex_logit_top_k,138,0.2028985507246377,0.5579710144927537,0.5579710144927537
+leave_brand_and_city_out,bengaluru,Zepto,competitor_max_coverage,138,0.11594202898550725,0.9057971014492754,0.9057971014492754
+leave_brand_and_city_out,bengaluru,Zepto,catchment_greedy,138,0.2753623188405797,0.4057971014492754,0.4057971014492754
+leave_brand_and_city_out,bengaluru,Zepto,catchment+spacing_greedy,138,0.2536231884057971,0.8260869565217391,0.8260869565217391
+leave_brand_and_city_out,bengaluru,Zepto,spacing+competition_no_features_greedy,138,0.3188405797101449,0.8405797101449275,0.8405797101449275
+leave_brand_and_city_out,bengaluru,Zepto,structural_greedy,138,0.30434782608695654,0.8623188405797102,0.8623188405797102
+leave_brand_and_city_out,bengaluru,Zepto,random,138,0.09583333333333335,0.5042753623188406,0.5042753623188406
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,demand_index_max_coverage,99,0.13131313131313133,0.6868686868686869,0.6868686868686869
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,lightgbm_top_k,99,0.15151515151515152,0.494949494949495,0.494949494949495
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,own_hex_logit_top_k,99,0.23232323232323232,0.48484848484848486,0.48484848484848486
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,competitor_max_coverage,99,0.1414141414141414,0.8888888888888888,0.8888888888888888
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,catchment_greedy,99,0.2222222222222222,0.3838383838383838,0.3838383838383838
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,catchment+spacing_greedy,99,0.2222222222222222,0.696969696969697,0.696969696969697
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,spacing+competition_no_features_greedy,99,0.24242424242424243,0.7373737373737373,0.7373737373737373
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,structural_greedy,99,0.1717171717171717,0.7272727272727273,0.7272727272727273
+leave_brand_and_city_out,bengaluru,Swiggy Instamart,random,99,0.07,0.3923737373737374,0.3923737373737374
+leave_one_city_out,pune,Blinkit,demand_index_max_coverage,67,0.014925373134328358,0.6119402985074627,0.7313432835820896
+leave_one_city_out,pune,Blinkit,lightgbm_top_k,67,0.1044776119402985,0.417910447761194,0.4626865671641791
+leave_one_city_out,pune,Blinkit,own_hex_logit_top_k,67,0.208955223880597,0.47761194029850745,0.582089552238806
+leave_one_city_out,pune,Blinkit,competitor_max_coverage,67,0.05970149253731343,0.7313432835820896,0.8208955223880597
+leave_one_city_out,pune,Blinkit,catchment_greedy,67,0.16417910447761194,0.22388059701492538,0.23880597014925373
+leave_one_city_out,pune,Blinkit,catchment+spacing_greedy,67,0.11940298507462686,0.746268656716418,0.835820895522388
+leave_one_city_out,pune,Blinkit,spacing+competition_no_features_greedy,67,0.34328358208955223,0.7761194029850746,0.8059701492537313
+leave_one_city_out,pune,Blinkit,structural_greedy,67,0.2835820895522388,0.7611940298507462,0.7910447761194029
+leave_one_city_out,pune,Blinkit,random,67,0.0903731343283582,0.4636567164179104,0.5444776119402985
+leave_one_city_out,pune,Zepto,demand_index_max_coverage,43,0.09302325581395349,0.5116279069767442,0.5813953488372093
+leave_one_city_out,pune,Zepto,lightgbm_top_k,43,0.046511627906976744,0.37209302325581395,0.4186046511627907
+leave_one_city_out,pune,Zepto,own_hex_logit_top_k,43,0.06976744186046512,0.23255813953488372,0.2558139534883721
+leave_one_city_out,pune,Zepto,competitor_max_coverage,43,0.046511627906976744,0.5581395348837209,0.6744186046511628
+leave_one_city_out,pune,Zepto,catchment_greedy,43,0.046511627906976744,0.11627906976744186,0.11627906976744186
+leave_one_city_out,pune,Zepto,catchment+spacing_greedy,43,0.11627906976744186,0.4418604651162791,0.5813953488372093
+leave_one_city_out,pune,Zepto,spacing+competition_no_features_greedy,43,0.18604651162790697,0.6976744186046512,0.7441860465116279
+leave_one_city_out,pune,Zepto,structural_greedy,43,0.16279069767441862,0.5581395348837209,0.6046511627906976
+leave_one_city_out,pune,Zepto,random,43,0.05976744186046511,0.3233720930232558,0.3883720930232558
+leave_one_city_out,pune,Swiggy Instamart,demand_index_max_coverage,37,0.05405405405405406,0.4594594594594595,0.5405405405405406
+leave_one_city_out,pune,Swiggy Instamart,lightgbm_top_k,37,0.13513513513513514,0.32432432432432434,0.35135135135135137
+leave_one_city_out,pune,Swiggy Instamart,own_hex_logit_top_k,37,0.10810810810810811,0.1891891891891892,0.2972972972972973
+leave_one_city_out,pune,Swiggy Instamart,competitor_max_coverage,37,0.08108108108108109,0.4864864864864865,0.5675675675675675
+leave_one_city_out,pune,Swiggy Instamart,catchment_greedy,37,0.10810810810810811,0.13513513513513514,0.13513513513513514
+leave_one_city_out,pune,Swiggy Instamart,catchment+spacing_greedy,37,0.02702702702702703,0.5135135135135135,0.5945945945945946
+leave_one_city_out,pune,Swiggy Instamart,spacing+competition_no_features_greedy,37,0.24324324324324326,0.5135135135135135,0.6216216216216216
+leave_one_city_out,pune,Swiggy Instamart,structural_greedy,37,0.1891891891891892,0.5675675675675675,0.6486486486486487
+leave_one_city_out,pune,Swiggy Instamart,random,37,0.05364864864864865,0.2932432432432433,0.3566216216216217
+leave_brand_and_city_out,pune,Blinkit,demand_index_max_coverage,67,0.014925373134328358,0.6119402985074627,0.7313432835820896
+leave_brand_and_city_out,pune,Blinkit,lightgbm_top_k,67,0.11940298507462686,0.4925373134328358,0.5671641791044776
+leave_brand_and_city_out,pune,Blinkit,own_hex_logit_top_k,67,0.208955223880597,0.4925373134328358,0.5970149253731343
+leave_brand_and_city_out,pune,Blinkit,competitor_max_coverage,67,0.05970149253731343,0.7313432835820896,0.8208955223880597
+leave_brand_and_city_out,pune,Blinkit,catchment_greedy,67,0.14925373134328357,0.208955223880597,0.22388059701492538
+leave_brand_and_city_out,pune,Blinkit,catchment+spacing_greedy,67,0.14925373134328357,0.7014925373134329,0.7910447761194029
+leave_brand_and_city_out,pune,Blinkit,spacing+competition_no_features_greedy,67,0.34328358208955223,0.7313432835820896,0.7761194029850746
+leave_brand_and_city_out,pune,Blinkit,structural_greedy,67,0.31343283582089554,0.7761194029850746,0.8208955223880597
+leave_brand_and_city_out,pune,Blinkit,random,67,0.0903731343283582,0.4636567164179104,0.5444776119402985
+leave_brand_and_city_out,pune,Zepto,demand_index_max_coverage,43,0.09302325581395349,0.5116279069767442,0.5813953488372093
+leave_brand_and_city_out,pune,Zepto,lightgbm_top_k,43,0.046511627906976744,0.3488372093023256,0.4186046511627907
+leave_brand_and_city_out,pune,Zepto,own_hex_logit_top_k,43,0.09302325581395349,0.23255813953488372,0.2558139534883721
+leave_brand_and_city_out,pune,Zepto,competitor_max_coverage,43,0.046511627906976744,0.5581395348837209,0.6744186046511628
+leave_brand_and_city_out,pune,Zepto,catchment_greedy,43,0.046511627906976744,0.11627906976744186,0.11627906976744186
+leave_brand_and_city_out,pune,Zepto,catchment+spacing_greedy,43,0.06976744186046512,0.4883720930232558,0.6511627906976745
+leave_brand_and_city_out,pune,Zepto,spacing+competition_no_features_greedy,43,0.23255813953488372,0.7209302325581395,0.7441860465116279
+leave_brand_and_city_out,pune,Zepto,structural_greedy,43,0.16279069767441862,0.5348837209302325,0.5348837209302325
+leave_brand_and_city_out,pune,Zepto,random,43,0.05976744186046511,0.3233720930232558,0.3883720930232558
+leave_brand_and_city_out,pune,Swiggy Instamart,demand_index_max_coverage,37,0.05405405405405406,0.4594594594594595,0.5405405405405406
+leave_brand_and_city_out,pune,Swiggy Instamart,lightgbm_top_k,37,0.08108108108108109,0.35135135135135137,0.3783783783783784
+leave_brand_and_city_out,pune,Swiggy Instamart,own_hex_logit_top_k,37,0.10810810810810811,0.21621621621621623,0.2972972972972973
+leave_brand_and_city_out,pune,Swiggy Instamart,competitor_max_coverage,37,0.08108108108108109,0.4864864864864865,0.5675675675675675
+leave_brand_and_city_out,pune,Swiggy Instamart,catchment_greedy,37,0.10810810810810811,0.13513513513513514,0.13513513513513514
+leave_brand_and_city_out,pune,Swiggy Instamart,catchment+spacing_greedy,37,0.02702702702702703,0.5135135135135135,0.5945945945945946
+leave_brand_and_city_out,pune,Swiggy Instamart,spacing+competition_no_features_greedy,37,0.21621621621621623,0.5405405405405406,0.6216216216216216
+leave_brand_and_city_out,pune,Swiggy Instamart,structural_greedy,37,0.13513513513513514,0.5675675675675675,0.5945945945945946
+leave_brand_and_city_out,pune,Swiggy Instamart,random,37,0.05364864864864865,0.2932432432432433,0.3566216216216217
