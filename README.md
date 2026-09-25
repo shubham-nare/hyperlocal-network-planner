@@ -30,6 +30,60 @@ estimates, not disclosed company figures — see Methodology.)*
 
 Full per-city write-ups with named localities: [`reports/expansion_memo_hyderabad.md`](reports/expansion_memo_hyderabad.md) · [`reports/expansion_memo_bengaluru.md`](reports/expansion_memo_bengaluru.md) · [`reports/expansion_memo_pune.md`](reports/expansion_memo_pune.md) · [`reports/city_comparison.md`](reports/city_comparison.md)
 
+## Follow-up: what real store networks reveal
+
+The three operators site stores using order data nobody outside can see, so their networks are
+evidence about that demand. A spatial entry model (`src/planner/revealed_demand.py`) asks where
+a brand is likely to put a store, given its own spacing and where competitors already are.
+Hiding a brand *and* a city from fitting and re-placing the brand's network, it lands on the
+exact real store hex **2.4× as often as the v1 demand index** (27.1% vs 11.5%, better in 9 of
+9 held-out networks). The honest twist: public demand features add nothing once competitors'
+locations are known. Spacing, which the earlier hex-by-hex ML model missed, and competitor
+co-location carry the signal. Write-up, per-brand strategy differences and a whitespace list:
+[`reports/revealed_demand.md`](reports/revealed_demand.md). *(Features for this study were
+rebuilt from Overture Maps + Meta HRSL, so its numbers are not directly comparable to the table
+above.)*
+
+## Follow-up: a rollout plan that learns
+
+v1 outputs a ranked list and implicitly opens it all at once. `src/planner/rollout.py` plans the
+way expansion teams actually work: commit now only to stores that pay back across plausible
+demand maps, let those stores *measure* demand for 8 weeks, update the map (Bayesian, spatially
+correlated), then decide the rest. Each deferred zone gets a trigger ("open unless the nearby
+wave-1 store reads below X orders/day"). The objective is rupees: incremental orders × margin −
+fixed cost − capex, using the Week 3 unit-economics scenarios.
+
+In a paired simulation against demand maps that are off by ×/÷1.3 to ×/÷2.1 locally, staging adds
+**₹20–30 Cr over 3 years** to v1's plan in Hyderabad and Pune, and cuts the share of cities where
+the rollout loses money from 10–31% to 0–11%. Deferring without using the data adds nothing: the
+value is the information. In Bengaluru the 40-store budget runs out before any site is uncertain,
+so the planner opens everything now. Write-up and plans: [`reports/rollout_plan.md`](reports/rollout_plan.md).
+*(Simulated against a stated error model; not a forecast.)*
+
+## Follow-up: what keeps the 10-minute promise
+
+v1's catchment radius assumes a rider is free the instant an order is packed. `src/planner/peak_sla.py`
+models riders as a queue per store and hour (M/G/c, checked against a discrete-event simulation) on
+the real Blinkit networks. Result: under the common rule of staffing each hour at 80% utilisation,
+the promise slips **off-peak, not at 8 pm**, because a small afternoon fleet queues far more than a
+30-rider evening one (79–92% of late orders fall outside 7–10 pm). Staffing from the queue model
+cuts late orders by 40–52% for 6–9% more rider-hours. Just re-spreading today's rider-hours cuts
+them by 18–23% at no cost. Per-store hourly rider rosters and the write-up:
+[`reports/peak_sla.md`](reports/peak_sla.md). *(Hourly demand shape and handover time are
+assumptions.)*
+
+## Follow-up: planning against competitors who move too
+
+Every plan above assumes Zepto and Instamart stand still. `src/planner/competition.py` plays the
+expansion as a leader-follower game: Blinkit adds 10 stores, then each rival adds 10, responding
+either *rationally* (maximising its own orders) or *as its history suggests* (its fitted
+revealed-demand model). Market shares come from the repo's Huff distance model applied across
+brands, calibrated to v1's orders. A plan that ignores rivals overstates its own value by up to 29%.
+A plan that anticipates the right response beats it in 18 of 18 comparisons (+2–51% more orders).
+When the response is unknown, the rational-rivals plan has the smallest worst-case regret in 7 of
+9 cases. Write-up: [`reports/competition.md`](reports/competition.md). *(Cross-brand choice is an
+assumption; modelled, not a forecast.)*
+
 ## What it looks like
 
 <img src="reports/network_hyderabad_base.png" width="420" alt="Hyderabad recommended sites map"> <img src="reports/unit_economics_breakeven.png" width="420" alt="Store break-even chart">
