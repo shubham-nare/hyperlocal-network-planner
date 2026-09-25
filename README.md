@@ -72,6 +72,18 @@ them by 18–23% at no cost. Per-store hourly rider rosters and the write-up:
 [`reports/peak_sla.md`](reports/peak_sla.md). *(Hourly demand shape and handover time are
 assumptions.)*
 
+## Follow-up: planning against competitors who move too
+
+Every plan above assumes Zepto and Instamart stand still. `src/planner/competition.py` plays the
+expansion as a leader-follower game: Blinkit adds 10 stores, then each rival adds 10, responding
+either *rationally* (maximising its own orders) or *as its history suggests* (its fitted
+revealed-demand model). Market shares come from the repo's Huff distance model applied across
+brands, calibrated to v1's orders. A plan that ignores rivals overstates its own value by up to 29%.
+A plan that anticipates the right response beats it in 18 of 18 comparisons (+2–51% more orders).
+When the response is unknown, the rational-rivals plan has the smallest worst-case regret in 7 of
+9 cases. Write-up: [`reports/competition.md`](reports/competition.md). *(Cross-brand choice is an
+assumption; modelled, not a forecast.)*
+
 ## What it looks like
 
 <img src="reports/network_hyderabad_base.png" width="420" alt="Hyderabad recommended sites map"> <img src="reports/unit_economics_breakeven.png" width="420" alt="Store break-even chart">

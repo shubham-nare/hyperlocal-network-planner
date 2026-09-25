@@ -26,8 +26,8 @@ import pandas as pd
 
 from planner.city_model import city_inputs, load_config
 from planner.competition import (
-    Market, behavioural_response, calibrate_category_demand, huff_weights, leader_plan, rational_response, screen,
-    sequential_response,
+    Market, behavioural_response, calibrate_category_demand, huff_weights, leader_plan, rational_response, regret_table,
+    screen, sequential_response,
 )
 from planner.open_data import label_places
 from planner.revealed_demand import COUNT_COLUMNS, build_city_data, feature_columns, fit, haversine_km, load_features
@@ -140,9 +140,17 @@ def main() -> None:
     sites = pd.concat([label_places(sites[sites["city"] == c], c) for c in cities])
     tag = args.tag
     rows.to_csv(f"reports/competition_summary{tag}.csv", index=False)
+    regret = []
+    for city, g in rows.groupby("city"):
+        values = {p: dict(zip(f["follower_model"], f["leader_incremental_orders"])) for p, f in g.groupby("plan")}
+        for plan, r in regret_table(values).items():
+            regret.append({"city": city, "plan": plan, **{f"regret_{k}": v for k, v in r.items()}})
+    regret = pd.DataFrame(regret)
+    regret.to_csv(f"reports/competition_regret{tag}.csv", index=False)
     sites.to_csv(f"reports/competition_sites{tag}.csv", index=False)
     with pd.option_context("display.width", 250, "display.max_columns", 20):
         print(rows.round(3).to_string(index=False))
+        print(regret.round(0).to_string(index=False))
 
 
 if __name__ == "__main__":

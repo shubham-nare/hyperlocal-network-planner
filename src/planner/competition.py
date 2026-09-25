@@ -206,3 +206,17 @@ def screen(market: Market, brand: str, cells: Sequence[int], keep: int, added: A
         gains.append(market.served(brand, a) - base)
     order = np.argsort(-np.asarray(gains), kind="stable")[:keep]
     return [int(cells[i]) for i in order]
+
+
+def regret_table(values: Mapping[str, Mapping[str, float]]) -> dict[str, dict[str, float]]:
+    """``values[plan][scenario]`` -> per plan: regret in each scenario (best plan's value there minus
+    this plan's) and ``max_regret``, the worst case over scenarios. The plan with the lowest max
+    regret is the one to pick when you don't know which scenario (follower behaviour) is true."""
+    scenarios = sorted({s for v in values.values() for s in v})
+    best = {s: max(v[s] for v in values.values()) for s in scenarios}
+    out = {}
+    for plan, v in values.items():
+        r = {s: best[s] - v[s] for s in scenarios}
+        r["max_regret"] = max(r.values())
+        out[plan] = r
+    return out

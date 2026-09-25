@@ -4,8 +4,8 @@ import pandas as pd
 import pytest
 
 from planner.competition import (
-    Market, behavioural_response, calibrate_category_demand, huff_weights, leader_plan, rational_response, screen,
-    sequential_response,
+    Market, behavioural_response, calibrate_category_demand, huff_weights, leader_plan, rational_response, regret_table,
+    screen, sequential_response,
 )
 from planner.revealed_demand import STRUCTURAL, FittedModel, build_city_data, reach_matrix
 
@@ -111,3 +111,10 @@ def test_behavioural_response_follows_the_fitted_model():
     near = behavioural_response(data, attract, "F1", 1, ("L", "F1", "F2"), {"L": [target] * 6})
     d = np.hypot(*(ll[near[0]] - ll[target])) * 111
     assert d <= RADIUS  # a co-locating follower moves next to the leader's new cluster
+
+
+def test_regret_table_picks_the_robust_plan():
+    values = {"a": {"x": 10, "y": 0}, "b": {"x": 7, "y": 6}, "c": {"x": 0, "y": 9}}
+    r = regret_table(values)
+    assert r["a"] == {"x": 0, "y": 9, "max_regret": 9}
+    assert r["b"]["max_regret"] == 3 and min(r, key=lambda k: r[k]["max_regret"]) == "b"

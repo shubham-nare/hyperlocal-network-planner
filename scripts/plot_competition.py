@@ -39,13 +39,14 @@ def main() -> None:
         for side in ("top", "right", "left"):
             ax.spines[side].set_visible(False)
         ax.spines["bottom"].set_color(GRID)
-    axes[0].set_ylabel("Blinkit's 3-year gain vs doing nothing (INR crore)", color=INK_2, fontsize=9)
+    axes[0].set_ylabel("Blinkit's 3-year margin gain vs doing nothing (INR Cr)", color=INK_2, fontsize=9)
     axes[0].legend(loc="upper left", fontsize=8.5, frameon=False, labelcolor=INK)
     axes[0].set_ylim(0, axes[0].get_ylim()[1] * 1.25)
     fig.suptitle("10 new Blinkit stores; Zepto and Instamart then add 10 each. Gain is measured against Blinkit adding "
                  "nothing while rivals still expand", x=0.01, ha="left", fontsize=11.5, color=INK)
-    fig.text(0.01, -0.03, "Modelled: Huff market shares across brands (cross-brand use is an assumption), store capacity "
-             "2,094/day, v1-calibrated demand, margin from the Week-3 scenarios. Not a forecast.", fontsize=8.5, color=INK_2)
+    fig.text(0.01, -0.03, "Margin on incremental orders over 3 years, before the 10 stores' fixed costs and capex (the same for "
+             "every plan). Modelled: Huff shares across brands (an assumption), capacity 2,094/day,\nv1-calibrated demand, "
+             "margin from the Week-3 scenarios. Not a forecast.", fontsize=8.5, color=INK_2)
     fig.tight_layout()
     fig.savefig("reports/competition_value.png", dpi=150, bbox_inches="tight", facecolor=SURFACE)
 
