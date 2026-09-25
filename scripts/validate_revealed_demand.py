@@ -32,7 +32,7 @@ from planner.demand import demand_index
 from planner.open_data import label_places
 from planner.reach import ride_budget_m
 from planner.revealed_demand import (
-    LADDER, CityData, build_city_data, fit, greedy_place, haversine_km, random_recall,
+    COUNT_COLUMNS, LADDER, feature_columns, load_features, CityData, build_city_data, fit, greedy_place, random_recall,
     recall_within, structural_gain, top_k, uncovered_gain, whitespace,
 )
 from planner.stores import load_stores
@@ -40,28 +40,8 @@ from planner.stores import load_stores
 CITIES = ("hyderabad", "bengaluru", "pune")
 BRANDS = ("Blinkit", "Zepto", "Swiggy Instamart")
 DISTANCES_KM = (0.5, 1.0, 1.5)
-COUNT_COLUMNS = ("density_per_km2", "office", "education", "food_retail", "residential_highrise", "buildings")
 LGB_PARAMS = {"n_estimators": 200, "num_leaves": 15, "min_child_samples": 20, "learning_rate": 0.05,
               "random_state": 7, "verbosity": -1}
-
-
-def load_features(city: str, source: str) -> pd.DataFrame:
-    if source == "open":
-        df = pd.read_parquet(f"data/processed/{city}_open_features_r8.parquet")
-    else:
-        import geopandas as gpd
-        df = pd.DataFrame(gpd.read_file(f"data/processed/{city}_demand_r8.gpkg").drop(columns="geometry"))
-        df["in_study_area"] = True
-        df["lat"], df["lng"] = zip(*df["h3"].map(h3.cell_to_latlng))
-    study = df[df["in_study_area"]]
-    w = study["population"].clip(lower=0)
-    centre = (np.average(study["lat"], weights=w), np.average(study["lng"], weights=w))
-    df["distance_to_center_km"] = haversine_km(df["lat"].to_numpy(), df["lng"].to_numpy(), *centre)
-    return df
-
-
-def feature_columns(df: pd.DataFrame) -> tuple[str, ...]:
-    return tuple(c for c in COUNT_COLUMNS if c in df.columns) + ("distance_to_center_km",)
 
 
 def index_demand(data: CityData, weights: dict[str, float]) -> np.ndarray:

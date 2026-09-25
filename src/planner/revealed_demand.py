@@ -129,6 +129,33 @@ def build_city_data(city: str, features: pd.DataFrame, stores: pd.DataFrame, rad
     )
 
 
+COUNT_COLUMNS = ("density_per_km2", "office", "education", "food_retail", "residential_highrise", "buildings")
+
+
+def load_features(city: str, source: str = "open", processed_dir: str = "data/processed") -> pd.DataFrame:
+    """Per-hex features for one city plus ``distance_to_center_km`` (population-weighted centre).
+
+    ``open``: the Overture + Meta HRSL parquet from build_open_features.py (study area + buffer ring).
+    ``v1``: the original WorldPop/OSM ``{city}_demand_r8.gpkg`` (study area only).
+    """
+    if source == "open":
+        df = pd.read_parquet(f"{processed_dir}/{city}_open_features_r8.parquet")
+    else:
+        import geopandas as gpd
+        df = pd.DataFrame(gpd.read_file(f"{processed_dir}/{city}_demand_r8.gpkg").drop(columns="geometry"))
+        df["in_study_area"] = True
+        df["lat"], df["lng"] = zip(*df["h3"].map(h3.cell_to_latlng))
+    study = df[df["in_study_area"]]
+    w = study["population"].clip(lower=0)
+    centre = (np.average(study["lat"], weights=w), np.average(study["lng"], weights=w))
+    df["distance_to_center_km"] = haversine_km(df["lat"].to_numpy(), df["lng"].to_numpy(), *centre)
+    return df
+
+
+def feature_columns(df: pd.DataFrame) -> tuple[str, ...]:
+    return tuple(c for c in COUNT_COLUMNS if c in df.columns) + ("distance_to_center_km",)
+
+
 # --------------------------------------------------------------------------------------------
 # Model
 # --------------------------------------------------------------------------------------------
