@@ -32,6 +32,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 from scipy import sparse
+from scipy.optimize import linprog
 from scipy.sparse.csgraph import maximum_flow
 
 from planner.revealed_demand import haversine_km
@@ -67,11 +68,7 @@ class ServiceNetwork:
     def stores(self, new: Sequence[int] = ()) -> np.ndarray:
         return np.concatenate([self.existing, np.asarray(list(new), dtype=int)])
 
-    def served(self, demand: np.ndarray, new: Sequence[int] = ()) -> float:
-        """Max orders/day the existing + ``new`` stores can serve (the capacitated assignment optimum)."""
-        stores = self.stores(new)
-        if len(stores) == 0:
-            return 0.0
+    def _max_flow(self, demand: np.ndarray, stores: np.ndarray):
         rows = [self._rows[s] for s in stores]
         lens = np.fromiter((len(r) for r in rows), dtype=int, count=len(rows))
         hex_idx = np.concatenate(rows)
@@ -83,7 +80,55 @@ class ServiceNetwork:
         cap = np.concatenate([np.full(n_s, round(self.capacity * FLOW_SCALE)), np.full(len(hex_idx), _INF_CAP),
                               np.round(np.asarray(demand)[used] * FLOW_SCALE)]).astype(np.int32)
         graph = sparse.csr_matrix((cap, (src, dst)), shape=(sink + 1, sink + 1))
-        return maximum_flow(graph, 0, sink).flow_value / FLOW_SCALE
+        return maximum_flow(graph, 0, sink), used, n_s, n_u
+
+    def served(self, demand: np.ndarray, new: Sequence[int] = ()) -> float:
+        """Max orders/day the existing + ``new`` stores can serve (the capacitated assignment optimum)."""
+        stores = self.stores(new)
+        if len(stores) == 0:
+            return 0.0
+        result, *_ = self._max_flow(demand, stores)
+        return result.flow_value / FLOW_SCALE
+
+    def assignment(self, demand: np.ndarray, new: Sequence[int] = (), lat: np.ndarray | None = None,
+                   lng: np.ndarray | None = None) -> sparse.csr_matrix:
+        """Orders/day each store (row, in ``stores(new)`` order) serves from each cell (column).
+
+        The served-orders optimum's split across overlapping stores is not unique, and max-flow's
+        own split is arbitrary (it can leave one of two overlapping stores nearly empty). Given cell
+        coordinates, the split is instead the one that serves the same maximum total with the least
+        total delivery distance -- i.e. orders go to the nearest store with capacity, as dispatch does.
+        """
+        stores = self.stores(new)
+        if len(stores) == 0:
+            return sparse.csr_matrix((0, self.n_cells))
+        result, used, n_s, n_u = self._max_flow(demand, stores)
+        if lat is None or lng is None:
+            block = sparse.csr_matrix(result.flow)[1:1 + n_s, 1 + n_s:1 + n_s + n_u].tocoo()
+            keep = block.data > 0
+            return sparse.csr_matrix((block.data[keep] / FLOW_SCALE, (block.row[keep], used[block.col[keep]])),
+                                     shape=(n_s, self.n_cells))
+        demand = np.asarray(demand, dtype=float)
+        rows = [self._rows[s] for s in stores]
+        store_of = np.repeat(np.arange(n_s), [len(r) for r in rows])
+        cell_of = np.concatenate(rows)
+        keep = demand[cell_of] > 0
+        store_of, cell_of = store_of[keep], cell_of[keep]
+        dist = haversine_km(lat[stores[store_of]], lng[stores[store_of]], lat[cell_of], lng[cell_of])
+        n_e = len(cell_of)
+        cells_used, cell_row = np.unique(cell_of, return_inverse=True)
+        a_ub = sparse.vstack([
+            sparse.csr_matrix((np.ones(n_e), (cell_row, np.arange(n_e))), shape=(len(cells_used), n_e)),   # per-cell demand
+            sparse.csr_matrix((np.ones(n_e), (store_of, np.arange(n_e))), shape=(n_s, n_e)),                # per-store capacity
+            sparse.csr_matrix(-np.ones((1, n_e))),                                                         # serve the optimum
+        ]).tocsr()
+        b_ub = np.concatenate([demand[cells_used], np.full(n_s, self.capacity), [-(result.flow_value / FLOW_SCALE - 0.5)]])
+        lp = linprog(dist, A_ub=a_ub, b_ub=b_ub, bounds=(0, None), method="highs")
+        if not lp.success:
+            raise RuntimeError(f"min-distance assignment failed: {lp.message}")
+        x = lp.x
+        nz = x > 1e-6
+        return sparse.csr_matrix((x[nz], (store_of[nz], cell_of[nz])), shape=(n_s, self.n_cells))
 
     def open_counts(self, new: Sequence[int] = ()) -> np.ndarray:
         """How many open stores reach each cell."""

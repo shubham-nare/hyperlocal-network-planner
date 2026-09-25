@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from planner.optimize import Site, solve_network
-from planner.revealed_demand import reach_matrix
+from planner.revealed_demand import haversine_km, reach_matrix
 from planner.rollout import (
     Economics, ServiceNetwork, build_prior, greedy_plan, most_informative_store, observation_model, observe,
     posterior_mean, posterior_samples, realised_value, screen_candidates, trigger_threshold,
@@ -151,3 +151,31 @@ def test_trigger_threshold_brackets_the_decision():
     assert rule in {"open if above", "open regardless", "don't open", "signal lowers value"}
     if rule == "open if above":
         assert np.exp(model.c[0] - 3.5 * 1) < thr < np.exp(model.c[0] + 3.5)
+
+
+def test_assignment_is_consistent_with_served_capacity_demand_and_reach():
+    _, net, demand, _ = _city(seed=9)
+    new = [7, 55]
+    flows = net.assignment(demand, new)
+    assert flows.shape == (len(net.stores(new)), net.n_cells)
+    assert flows.sum() == pytest.approx(net.served(demand, new), abs=0.5)
+    assert (np.asarray(flows.sum(axis=1)).ravel() <= net.capacity + 1e-6).all()
+    assert (np.asarray(flows.sum(axis=0)).ravel() <= demand + 0.1).all()
+    reach_rows = net.reach[net.stores(new)]
+    assert (flows.multiply(reach_rows) != flows).nnz == 0  # only reachable cells get orders
+
+
+def test_min_distance_assignment_serves_the_same_total_over_shorter_trips():
+    cells, net, demand, latlng = _city(seed=10, n_existing=10)
+    arbitrary = net.assignment(demand)
+    nearest = net.assignment(demand, lat=latlng[:, 0], lng=latlng[:, 1])
+    assert nearest.sum() == pytest.approx(arbitrary.sum(), abs=1.0)
+    assert (np.asarray(nearest.sum(axis=1)).ravel() <= net.capacity + 1e-6).all()
+    assert (np.asarray(nearest.sum(axis=0)).ravel() <= demand + 1e-6).all()
+
+    def total_km(flows):
+        f = flows.tocoo()
+        st = net.stores()[f.row]
+        return float((haversine_km(latlng[st, 0], latlng[st, 1], latlng[f.col, 0], latlng[f.col, 1]) * f.data).sum())
+
+    assert total_km(nearest) <= total_km(arbitrary) + 1e-6

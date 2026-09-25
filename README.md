@@ -60,6 +60,18 @@ value is the information. In Bengaluru the 40-store budget runs out before any s
 so the planner opens everything now. Write-up and plans: [`reports/rollout_plan.md`](reports/rollout_plan.md).
 *(Simulated against a stated error model; not a forecast.)*
 
+## Follow-up: what keeps the 10-minute promise
+
+v1's catchment radius assumes a rider is free the instant an order is packed. `src/planner/peak_sla.py`
+models riders as a queue per store and hour (M/G/c, checked against a discrete-event simulation) on
+the real Blinkit networks. Result: under the common rule of staffing each hour at 80% utilisation,
+the promise slips **off-peak, not at 8 pm**, because a small afternoon fleet queues far more than a
+30-rider evening one (79–92% of late orders fall outside 7–10 pm). Staffing from the queue model
+cuts late orders by 40–52% for 6–9% more rider-hours. Just re-spreading today's rider-hours cuts
+them by 18–23% at no cost. Per-store hourly rider rosters and the write-up:
+[`reports/peak_sla.md`](reports/peak_sla.md). *(Hourly demand shape and handover time are
+assumptions.)*
+
 ## What it looks like
 
 <img src="reports/network_hyderabad_base.png" width="420" alt="Hyderabad recommended sites map"> <img src="reports/unit_economics_breakeven.png" width="420" alt="Store break-even chart">
