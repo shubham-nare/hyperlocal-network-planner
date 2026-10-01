@@ -23,3 +23,6 @@ data/interim/
 
 # osmnx cache
 cache/
+
+# Local working notes
+CONTEXT.md
